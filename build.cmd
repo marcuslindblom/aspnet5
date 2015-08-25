@@ -3,8 +3,8 @@ cd %~dp0
 
 SETLOCAL
 SET CACHED_NUGET=%LocalAppData%\NuGet\NuGet.exe
-SET BUILDCMD_KOREBUILD_VERSION="1.0.0-beta6"
-SET BUILDCMD_DNX_VERSION="1.0.0-beta6"
+SET BUILDCMD_KOREBUILD_VERSION=""
+SET BUILDCMD_DNX_VERSION=""
 
 IF EXIST %CACHED_NUGET% goto copynuget
 echo Downloading latest version of NuGet.exe...
