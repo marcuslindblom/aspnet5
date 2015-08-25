@@ -1,0 +1,9 @@
+use namespace="System.Net"
+
+var VERSION='0.1'
+var FULL_VERSION='0.1'
+var AUTHORS='BrickPile'
+
+use-standard-lifecycle
+k-standard-goals
+
