@@ -6,4 +6,4 @@ install:
   - dnvm upgrade
   - dnu restore
 script:
-  - cd src/src && dnu restore && dnu build
+  - cd src/ && dnu restore && dnu build
