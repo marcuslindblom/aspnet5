@@ -7,3 +7,5 @@ install:
   - dnu restore
 script:
   - cd src/ && dnu build
+notifications:
+  slack: brickpile:EXJMvnNmca5nvL24ShjG9M1i
