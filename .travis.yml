@@ -1,6 +1,9 @@
-language: csharp
-sudo: false
-before_script:
- - chmod +x build.sh
+language: CSharp
+mono:
+  - latest
+install:
+  - curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_BRANCH=dev sh && source ~/.dnx/dnvm/dnvm.sh
+  - dnvm upgrade
+  - dnu restore
 script:
-  - ./build.sh --quiet verify
+  - dnx build -parallel none
