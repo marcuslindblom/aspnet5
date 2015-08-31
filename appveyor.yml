@@ -1,12 +1,14 @@
 init:
   - git config --global core.autocrlf true
+install:
+  - ps: &{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}
+  - cmd: dnvm upgrade
+  - cmd: dnu restore
 build_script:
-  - build.cmd --quiet --parallel verify
+  - cd src/ && dnu build
 clone_depth: 1
 test: off
 deploy: off
-artifacts:
-  - path: artifacts/build/Xunit.KRunner.AppVeyor.*.nupkg
 notifications:
 # Slack
   - provider: Slack
