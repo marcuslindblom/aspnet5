@@ -12,7 +12,7 @@ before_build:
  - ps: dnu restore
  
 build_script:
-  - cd src/ && dnu build
+  - cmd: cd src/ && dnu build
   
 clone_depth: 1
 
