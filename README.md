@@ -1,4 +1,4 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/2k7g7j6dt7p2wr8a/branch/master?svg=true)](https://ci.appveyor.com/project/marcuslindblom/aspnet5/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/2k7g7j6dt7p2wr8a/branch/master?svg=true)](https://ci.appveyor.com/project/marcuslindblom/aspnet5/branch/master) [![Build status](https://travis-ci.org/marcuslindblom/aspnet5.svg)](https://travis-ci.org/marcuslindblom/aspnet5)
 
 # Welcome to ASP.NET 5 Preview
 
