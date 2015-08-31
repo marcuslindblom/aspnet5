@@ -20,6 +20,6 @@ test: off
 
 deploy: off
 
-notifications:
-  - provider: Slack
-    incoming_webhook: https://hooks.slack.com/services/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 
+#notifications:
+#  - provider: Slack
+#    incoming_webhook: https://hooks.slack.com/services/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 
