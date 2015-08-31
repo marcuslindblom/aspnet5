@@ -1,5 +1,8 @@
 language: csharp
-sudo: true
+sudo: false
+before_script:
+ - chmod +x build.sh
+ 
 mono:
   - beta
 script:
