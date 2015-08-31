@@ -1,10 +1,10 @@
 init:
   - git config --global core.autocrlf true
 install:
-  ps: (new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1','dnvminstall.ps1')
-  cmd: powershell.exe dnvminstall.ps1
-  cmd: dnvm upgrade
-  cmd: dnu restore
+  - ps: (new-object net.webclient).DownloadFile('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1','dnvminstall.ps1')
+  - cmd: powershell.exe dnvminstall.ps1
+  - cmd: dnvm upgrade
+  - cmd: dnu restore
 build_script:
   - cd src/ && dnu build
 clone_depth: 1
