@@ -2,8 +2,5 @@ language: csharp
 sudo: false
 before_script:
  - chmod +x build.sh
- 
-mono:
-  - beta
 script:
   - ./build.sh --quiet verify
