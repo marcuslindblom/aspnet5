@@ -2,7 +2,7 @@ init:
   - git config --global core.autocrlf true
   
 install:
- - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
+ #- ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
  #- ps: dnvm install 1.0.0-beta6
  #- cmd: dnvm upgrade
  #- ps: dnvm use 1.0.0-beta6
@@ -12,9 +12,10 @@ install:
  #- cmd: dnu restore
  
 build_script:
-  - cmd: dnvm upgrade
-  - cmd: dnu restore
-  - cmd: cd src/ && dnu build
+  - cmd: build.cmd --quiet --parallel verify
+  #- cmd: dnvm upgrade
+  #- cmd: dnu restore
+  #- cmd: cd src/ && dnu build
   
 clone_depth: 1
 
