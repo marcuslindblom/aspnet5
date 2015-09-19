@@ -4,12 +4,12 @@ init:
 install:
  - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
  #- ps: dnvm install 1.0.0-beta6
- - cmd: dnvm upgrade
+ - ps: dnvm upgrade
  #- ps: dnvm use 1.0.0-beta6
  #- ps: dnvm list
  #- ps: npm cache clean
  #- ps: npm install -g gulp bower
- - cmd: dnu restore
+ - ps: dnu restore
  
 build_script:
   #- cmd: build.cmd --quiet --parallel verify
