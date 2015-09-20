@@ -20,12 +20,6 @@ before_build:
 #- ps: npm cache clean
 #- ps: npm install -g gulp bower
  - ps: dnu restore
-#- ps: cd .\src;dnu build
-  
-# Use NuGet 2.*
-# - ps: (New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\Tools\NuGet\NuGet.exe')
-# - ps: nuget restore
-# - cmd: set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
