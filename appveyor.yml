@@ -18,6 +18,8 @@ before_build:
  #- ps: npm cache clean
  #- ps: npm install -g gulp bower
  - ps: dnu restore
+ - ps: pwd
+ - ps: ls
  - ps: dnu build
 # Use NuGet 2.*
 # - ps: (New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\Tools\NuGet\NuGet.exe')
