@@ -1,3 +1,7 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/2k7g7j6dt7p2wr8a/branch/master?svg=true)](https://ci.appveyor.com/project/marcuslindblom/aspnet5/branch/master) [![Build status](https://travis-ci.org/marcuslindblom/aspnet5.svg)](https://travis-ci.org/marcuslindblom/aspnet5) [![ZenHub](https://raw.githubusercontent.com/ZenHubIO/support/master/zenhub-badge.png)](https://zenhub.io)
+ 		 
++[Azure](http://aspnet5mvc6.azurewebsites.net/)
+
 # Welcome to ASP.NET 5 Preview
 
 We've made some big updates in this release, so it’s **important** that you spend a few minutes to learn what’s new.
