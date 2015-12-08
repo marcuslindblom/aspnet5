@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 
-namespace WebApplicationBasic.Controllers
+namespace aspnet5rc.Controllers
 {
     public class HomeController : Controller
     {
@@ -29,7 +29,7 @@ namespace WebApplicationBasic.Controllers
 
         public IActionResult Error()
         {
-            return View("~/Views/Shared/Error.cshtml");
+            return View();
         }
     }
 }

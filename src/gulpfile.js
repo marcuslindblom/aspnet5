@@ -1,5 +1,6 @@
 /// <binding Clean='clean' />
-'use strict';
+"use strict";
+
 var gulp = require("gulp"),
   rimraf = require("rimraf"),
   concat = require("gulp-concat"),
@@ -8,7 +9,7 @@ var gulp = require("gulp"),
   project = require("./project.json");
 
 var paths = {
-  webroot: "./" + project.webroot + "/"
+  webroot: "./wwwroot/"
 };
 
 paths.js = paths.webroot + "js/**/*.js";
