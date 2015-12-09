@@ -18,7 +18,7 @@ before_build:
 #- ps: dnvm list
 #- ps: dnvm use 1.0.0-beta7
 #- ps: npm cache clean
-#- ps: npm install -g gulp bower
+ - ps: npm install -g gulp bower
  - ps: dnu restore
 
 # to run your custom scripts instead of automatic MSBuild
