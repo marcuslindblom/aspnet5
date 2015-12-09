@@ -16,7 +16,7 @@ namespace Tests
             Assert.Equal(4, Add(2, 2));
         }
 
-        [Fact]
+        [Fact(Skip = "Bogus test")]
         public void FailingTest()
         {
             Assert.Equal(5, Add(2, 2));
