@@ -6,7 +6,7 @@ install:
   - dnvm upgrade
   - dnu restore
 script:
-  - dnu build .\src
-  - dnx -p .\test test
+  - dnu build src
+  - dnx -p test test
 notifications:
   slack: brickpile:mlqEPss57QcJQpK8I6iRjD2y
