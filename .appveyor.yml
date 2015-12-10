@@ -43,7 +43,7 @@ deploy:
    username: $aspnet5mvc6
    password: AFHm8kLLRms6nfoK5XLbMg42b74rAdets5sgzRgJkEMgaBltpivJXehagben
    ntlm: false
-   remove_files: false
+   remove_files: true
    app_offline: false
    artifact: AppOutput
    
