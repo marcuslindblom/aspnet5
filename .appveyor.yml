@@ -31,8 +31,9 @@ test_script:
  - ps: dnx -p .\test test
  
 artifacts:
- - path: /AppOutput/
-#  name: AppOutput
+ - path: /AppOutput
+   name: AppOutput
+   type: WebDeployPackage
    
 deploy:
 
