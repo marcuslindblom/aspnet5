@@ -38,7 +38,7 @@ deploy:
 
  # Web Deploy deployment provider settings
  - provider: WebDeploy
-   server: aspnet5mvc6.scm.azurewebsites.net:443
+   server: https://aspnet5mvc6.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5mvc6
    website: aspnet5mvc6
    username: $aspnet5mvc6
    password: AFHm8kLLRms6nfoK5XLbMg42b74rAdets5sgzRgJkEMgaBltpivJXehagben
