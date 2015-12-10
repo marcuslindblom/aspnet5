@@ -31,7 +31,7 @@ test_script:
  - ps: dnx -p .\test test
  
 artifacts:
- - path: AppOutput.zip
+ - path: /AppOutput/
 #  name: AppOutput
    
 deploy:
