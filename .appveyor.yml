@@ -45,5 +45,6 @@ deploy:
    ntlm: false
    remove_files: false
    app_offline: false
+   artifact: AppOutput
    on:
      branch: master
