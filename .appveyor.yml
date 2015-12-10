@@ -24,16 +24,16 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
  - ps: dnu build ./src
- - ps: dnu publish ./src -o AppOutput
-#- ps: dnu publish ./src --configuration Release -o AppOutput --no-source --runtime "active"
+#- ps: dnu publish ./src -o AppOutput
+- ps: dnu publish ./src --configuration Release -o AppOutput --no-source --runtime "active"
  
 # to run your custom scripts instead of automatic tests
 test_script: 
  - ps: dnx -p .\test test
  
 artifacts:
- - path: /AppOutput
-   name: AppOutput
+ - path: AppOutput.zip
+#   name: AppOutput
    
 deploy:
 
@@ -46,7 +46,7 @@ deploy:
    ntlm: false
    remove_files: false
    app_offline: false
-   artifact: AppOutput
+#   artifact: AppOutput
    
 #on:
 #branch: master
