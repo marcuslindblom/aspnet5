@@ -33,7 +33,7 @@ test_script:
 artifacts:
  - path: /AppOutput
    name: AppOutput
-   type: WebDeployPackage
+#   type: WebDeployPackage
    
 deploy:
 
