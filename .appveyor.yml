@@ -43,6 +43,9 @@ deploy:
    website: $aspnet5rc2
    username: $aspnet5rc2
    password: Fv3pHmA5DPc9GnyDNd9tqX3Rk5ude1LCjtdYSofp4PopJmGY84YnMs4dcWxF
+   ntlm: false
+   remove_files: false
+   app_offline: false   
    aspnet5: true
 #  artifact: AppOutput
    
