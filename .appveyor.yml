@@ -34,6 +34,10 @@ artifacts:
  - path: /AppOutput
    name: AppOutput
 
+# scripts to run before deployment
+before_deploy:
+ - ps: Stop-AzureWebsite -Name aspnet5rc2
+
 deploy:
 
 # Web Deploy deployment provider settings
