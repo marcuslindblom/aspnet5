@@ -40,7 +40,7 @@ deploy:
 # Web Deploy deployment provider settings
  - provider: WebDeploy
    server: https://aspnet5rc2.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5rc2
-   website: $aspnet5rc2
+   website: aspnet5rc2
    username: $aspnet5rc2
    password: Fv3pHmA5DPc9GnyDNd9tqX3Rk5ude1LCjtdYSofp4PopJmGY84YnMs4dcWxF
    ntlm: false
