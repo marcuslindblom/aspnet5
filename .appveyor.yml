@@ -33,8 +33,7 @@ test_script:
 artifacts:
  - path: /AppOutput
    name: AppOutput
-#   type: WebDeployPackage
-   
+
 deploy:
 
 # Web Deploy deployment provider settings
@@ -42,12 +41,18 @@ deploy:
    server: https://aspnet5rc2.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5rc2
    website: aspnet5rc2
    username: $aspnet5rc2
-   password: Fv3pHmA5DPc9GnyDNd9tqX3Rk5ude1LCjtdYSofp4PopJmGY84YnMs4dcWxF
-   ntlm: false
-   remove_files: false
-   app_offline: true   
+   password:
+    secure: SULiqIVeN1vB8S2A786UGTz4ehYV5TVQUmiPcEDWYvQgPM6tZqafK1gFZpkG9/xCF7rnF5SFj3zaSKy/RYh/HQ==
+   app_offline: true
    aspnet5: true
-#  artifact: AppOutput
-   
+
 # on:
 # branch: master
+
+notifications:
+ - provider: Slack
+   incoming_webhook: https://hooks.slack.com/services/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
+   channel: general
+   on_build_success: true
+   on_build_failure: true
+   on_build_status_changed: true
