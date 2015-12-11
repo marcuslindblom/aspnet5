@@ -43,7 +43,6 @@ deploy:
    username: $aspnet5rc2
    password:
     secure: SULiqIVeN1vB8S2A786UGTz4ehYV5TVQUmiPcEDWYvQgPM6tZqafK1gFZpkG9/xCF7rnF5SFj3zaSKy/RYh/HQ==
-   remove_files: true
    app_offline: true
    aspnet5: true
 
