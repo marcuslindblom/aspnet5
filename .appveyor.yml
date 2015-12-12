@@ -37,7 +37,12 @@ artifacts:
 deploy:
  - provider: Environment
    name: Demo
-
+   
+after_deploy:
+ - ps: >-
+     $postSlackMessage = @{token="T09TRKED9/B0GFMHR6D/NsaGsMWV5EOZuLMf6o5PyJtH";channel="#general";txt="Hello from PowerShell!";username="via API"}
+     Invoke-RestMethod -Uri https://slack.com/api/chat.postMessage -Body $postSlackMessage
+     
 # Web Deploy deployment provider settings
 # - provider: WebDeploy
 #   server: https://aspnet5rc2.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5rc2
