@@ -10,8 +10,5 @@ script:
   - dnx -p test test
 deploy:  
   provider: azure_web_apps
-  username: $aspnet5rc2
-  password: Fv3pHmA5DPc9GnyDNd9tqX3Rk5ude1LCjtdYSofp4PopJmGY84YnMs4dcWxF
-  site: aspnet5rc2
 notifications:
   slack: brickpile:mlqEPss57QcJQpK8I6iRjD2y
