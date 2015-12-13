@@ -37,22 +37,10 @@ artifacts:
 deploy:
  - provider: Environment
    name: Demo
+   website_name: aspnet5rc2
    on:
     branch: master                # release from master branch only
     appveyor_repo_tag: true       # deploy on tag push only   
-
-# Web Deploy deployment provider settings
-# - provider: WebDeploy
-#   server: https://aspnet5rc2.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5rc2
-#   website: aspnet5rc2
-#   username: $aspnet5rc2
-#   password:
-#    secure: SULiqIVeN1vB8S2A786UGTz4ehYV5TVQUmiPcEDWYvQgPM6tZqafK1gFZpkG9/xCF7rnF5SFj3zaSKy/RYh/HQ==
-#   app_offline: true
-#   aspnet5: true
-
-# on:
-# branch: master
 
 notifications:
  - provider: Slack
