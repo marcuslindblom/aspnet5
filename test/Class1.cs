@@ -22,6 +22,12 @@ namespace Tests
             Assert.Equal(5, Add(2, 2));
         }
 
+        [Fact]
+        public void DoOrDie()
+        {
+            
+        }
+
         int Add(int x, int y)
         {
             return x + y;
