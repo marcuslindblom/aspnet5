@@ -8,7 +8,7 @@ install:
 script:
   - dnu build src
   - dnx -p test test
-deploy:  
-  provider: azure_web_apps
+#deploy:  
+#  provider: azure_web_apps
 notifications:
   slack: brickpile:mlqEPss57QcJQpK8I6iRjD2y
