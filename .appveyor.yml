@@ -25,11 +25,11 @@ before_build:
 build_script:
  - ps: dnu build ./src
  - ps: dnu publish ./src --configuration Release -o AppOutput --no-source --runtime "active"
- 
+
 # to run your custom scripts instead of automatic tests
-test_script: 
+test_script:
  - ps: dnx -p .\test test
- 
+
 artifacts:
  - path: /AppOutput
    name: AppOutput
@@ -37,7 +37,10 @@ artifacts:
 deploy:
  - provider: Environment
    name: Demo
-   
+   on:
+	branch: master                # release from master branch only
+    appveyor_repo_tag: true       # deploy on tag push only   
+
 # Web Deploy deployment provider settings
 # - provider: WebDeploy
 #   server: https://aspnet5rc2.scm.azurewebsites.net:443/msdeploy.axd?site=aspnet5rc2
