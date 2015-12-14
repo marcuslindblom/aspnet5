@@ -12,8 +12,8 @@ install:
 # scripts to run before build
 before_build:
  - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
- - ps: $version = (Get-Content ./src/project.json | ConvertFrom-Json).version + "+{build}"
- - ps: Update-AppveyorBuild -Version $version
+# - ps: $version = (Get-Content ./src/project.json | ConvertFrom-Json).version + "+{build}"
+# - ps: Update-AppveyorBuild -Version $version
 #- ps: dnvm install 1.0.0-beta7
  - ps: dnvm upgrade
 #- ps: dnvm update-self
@@ -40,14 +40,14 @@ deploy:
  - provider: Environment
    name: Demo
    website_name: aspnet5rc3
-   on:
-    appveyor_repo_tag: true       # deploy on tag push only
+#   on:
+#    appveyor_repo_tag: true       # deploy on tag push only
 #   branch: master                # release from master branch only    
 
 after_deploy:
-#  - ps: Disable-AzureDataCollection
-#  - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
-#  - ps: Restart-AzureWebsite -Name "aspnet5rc3"
+# - ps: Disable-AzureDataCollection
+ - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
+ - ps: Restart-AzureWebsite -Name "aspnet5rc3"
 
 notifications:
  - provider: Slack
