@@ -42,6 +42,9 @@ deploy:
     appveyor_repo_tag: true       # deploy on tag push only
 #   branch: master                # release from master branch only    
 
+after_deploy:
+ - ps: Start-AzureWebsite -Name aspnet5rc3
+
 notifications:
  - provider: Slack
    incoming_webhook: https://hooks.slack.com/services/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
