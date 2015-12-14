@@ -43,9 +43,10 @@ deploy:
 #   branch: master                # release from master branch only    
 
 after_deploy:
- - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
- - ps: Disable-AzureDataCollection
- - ps: Start-AzureWebsite -Name "aspnet5rc3"
+  - ps: Get-AzureSubscription
+# - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
+# - ps: Disable-AzureDataCollection
+# - ps: Start-AzureWebsite -Name "aspnet5rc3"
 
 notifications:
  - provider: Slack
