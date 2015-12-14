@@ -12,7 +12,8 @@ install:
 # scripts to run before build
 before_build:
  - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
- - ps: Update-AppveyorBuild -Version (Get-Content ./src/project.json | ConvertFrom-Json).version + "+" {build}
+ - ps: $version = (Get-Content ./src/project.json | ConvertFrom-Json).version + "+{build}"
+ - ps: Update-AppveyorBuild -Version $version
 #- ps: dnvm install 1.0.0-beta7
  - ps: dnvm upgrade
 #- ps: dnvm update-self
