@@ -34,12 +34,12 @@ artifacts:
  - path: /AppOutput
    name: AppOutput
 
-#deploy:
-# - provider: Environment
-#   name: Demo
-#   website_name: aspnet5rc3
-#   on:
-#    appveyor_repo_tag: true       # deploy on tag push only
+deploy:
+ - provider: Environment
+   name: Demo
+   website_name: aspnet5rc3
+   on:
+    appveyor_repo_tag: true       # deploy on tag push only
 #   branch: master                # release from master branch only    
 
 notifications:
