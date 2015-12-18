@@ -4,12 +4,12 @@
 
 @using Microsoft.AspNet.Http.Features
 
-@*<h2>Culture</h2>
+<h2>Culture</h2>
 @{ 
     var requestCultureFeature = Context.Features.Get<Microsoft.AspNet.Localization.IRequestCultureFeature>();
 }
 
-<h3>@requestCultureFeature.RequestCulture.Culture.Name</h3>*@
+<h3>@requestCultureFeature.RequestCulture.Culture.Name</h3>
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
