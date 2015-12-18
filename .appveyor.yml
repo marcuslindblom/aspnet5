@@ -26,14 +26,14 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
  - ps: dnu build ./src
- - ps: dnu publish ./src --configuration Release -o AppOutput --no-source --runtime "active"
+ - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
 test_script:
  - ps: dnx -p .\test test
 
 artifacts:
- - path: /AppOutput
+ - path: /AppOutput/wwwroot
    name: AppOutput
 
 deploy:
@@ -46,8 +46,8 @@ deploy:
 
 after_deploy:
 # - ps: Disable-AzureDataCollection
- - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
- - ps: Restart-AzureWebsite -Name "aspnet5rc3"
+# - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
+# - ps: Restart-AzureWebsite -Name "aspnet5rc3"
 
 notifications:
  - provider: Slack
