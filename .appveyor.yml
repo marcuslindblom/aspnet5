@@ -27,8 +27,8 @@ build_script:
  - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
-test_script:
- - ps: dnx -p .\test test
+#test_script:
+# - ps: dnx -p .\test test
 
 artifacts:
  - path: /AppOutput
