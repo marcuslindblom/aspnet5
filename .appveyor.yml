@@ -52,7 +52,7 @@ deploy:
    name: Test
    website_name: aspnet5rc2
    on:
-    branch: /^pr\/.*/
+    branch: master
 
 notifications:
  - provider: Slack
