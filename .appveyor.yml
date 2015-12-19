@@ -11,8 +11,9 @@ install:
  - ps: $env:DNX_BUILD_VERSION = $env:APPVEYOR_BUILD_NUMBER
 # - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
 # - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
-# - ps: $json = $version = Get-Content .\src\project.json -Raw | ConvertFrom-Json
-# - ps: $version = $json.version.substring(0,5)
+ - ps: $json = Get-Content .\src\project.json -Raw | ConvertFrom-Json
+ - ps: $version = $json.version -replace "\*", $env:APPVEYOR_BUILD_NUMBER
+ - ps: Update-AppveyorBuild -Version $version
 # - ps: Update-AppveyorBuild -Version "$version+$env:MY_BUILD_TAG"
 
 # scripts to run before build
