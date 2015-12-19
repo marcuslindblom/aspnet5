@@ -51,8 +51,8 @@ deploy:
  - provider: Environment
    name: Test
    website_name: aspnet5rc2
-   on:
-    branch: master
+#   on:
+#    branch: master
 
 notifications:
  - provider: Slack
