@@ -51,6 +51,7 @@ deploy:
  - provider: Environment
    name: Test
    website_name: aspnet5rc2
+   remove_files: true
 #   on:
 #    branch: master
 
