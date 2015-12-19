@@ -8,7 +8,7 @@ init:
 # scripts that run after cloning repository
 install:
  - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
- - set DNX_BUILD_VERSION=%APPVEYOR_BUILD_NUMBER%
+ - ps: $env:DNX_BUILD_VERSION = %APPVEYOR_BUILD_NUMBER%
 # - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
 # - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
 # - ps: $json = $version = Get-Content .\src\project.json -Raw | ConvertFrom-Json
@@ -30,6 +30,7 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
  - ps: dnu build ./src
+ - ps: Get-Variable -Name DNX_VERSION -Value
  - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
