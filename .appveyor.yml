@@ -40,25 +40,19 @@ build_script:
 artifacts:
  - path: /AppOutput
    name: AppOutput
-
+   
 deploy:
  - provider: Environment
    name: Demo
    website_name: aspnet5rc3
    on:
-    appveyor_repo_tag: true # deploy on tag push only
-#    branch: master         # release from master branch only    
-
+    appveyor_repo_tag: true
+    
  - provider: Environment
    name: Test
    website_name: aspnet5rc2
    on:
     branch: /^pr\/.*/
-
-#after_deploy:
-# - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
-# - ps: Disable-AzureDataCollection
-# - ps: Start-AzureWebsite -Name "aspnet5rc3"
 
 notifications:
  - provider: Slack
