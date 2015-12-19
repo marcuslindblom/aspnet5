@@ -24,7 +24,7 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
  - ps: dnu build ./src
- - ps: dnu publish ./src --configuration Release -o AppOutput --no-source --runtime "active"
+ - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
 test_script:
@@ -42,10 +42,10 @@ deploy:
     appveyor_repo_tag: true       # deploy on tag push only
 #   branch: master                # release from master branch only    
 
-after_deploy:
- - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
- - ps: Disable-AzureDataCollection
- - ps: Start-AzureWebsite -Name "aspnet5rc3"
+#after_deploy:
+# - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
+# - ps: Disable-AzureDataCollection
+# - ps: Start-AzureWebsite -Name "aspnet5rc3"
 
 notifications:
  - provider: Slack
