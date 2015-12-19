@@ -10,7 +10,7 @@ install:
  - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
  - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
  - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
- - ps: $json = (Get-Content .\src\project.json) | ConvertFrom-Json
+ - ps: $json = $version = Get-Content .\src\project.json -Raw | ConvertFrom-Json
  - ps: $version = $json.version.substring(0,5)
  - ps: Update-AppveyorBuild -Version "$version+$env:MY_BUILD_TAG"
 
