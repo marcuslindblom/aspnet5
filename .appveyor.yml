@@ -31,7 +31,6 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
  - ps: dnu build ./src
- - ps: Get-Variable -Name DNX_VERSION -Value
  - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
