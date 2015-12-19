@@ -53,7 +53,7 @@ deploy:
    name: Test
    website_name: aspnet5rc2
    on:
-    branch: +:refs/pull/(*/merge)
+    branch: /+:refs/pull/(*/merge)/
 
 #after_deploy:
 # - ps: Select-AzureSubscription -Current -SubscriptionName "Visual Studio Premium with MSDN"
