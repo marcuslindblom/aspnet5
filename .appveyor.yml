@@ -53,7 +53,7 @@ deploy:
    website_name: aspnet5rc2
    remove_files: true
     on:
-	 APPVEYOR_PULL_REQUEST_NUMBER: /\d+/
+     APPVEYOR_PULL_REQUEST_NUMBER: /\d+/
 #   on:
 #    branch: master
 
