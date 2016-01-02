@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
@@ -38,7 +39,8 @@ namespace src.Localization
                     return Task.FromResult((ProviderCultureResult)null);
                 }
 
-                if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
+                //if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
+                if(culture.Name == new CultureInfo("en").TwoLetterISOLanguageName)
                 {
                     if (httpContext.Request.Path.Equals(new PathString("/" + culture.TwoLetterISOLanguageName)))
                     {
@@ -57,7 +59,8 @@ namespace src.Localization
             }
             else
             {
-                var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
+                //var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
+                var requestCulture = new ProviderCultureResult(new CultureInfo("en").TwoLetterISOLanguageName, new CultureInfo("en").TwoLetterISOLanguageName);
 
                 return Task.FromResult(requestCulture);
             }

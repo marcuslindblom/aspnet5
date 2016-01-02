@@ -8,7 +8,7 @@ using Microsoft.AspNet.Localization;
 using System.Globalization;
 using src;
 
-namespace aspnet5rc
+namespace src
 {
     public class Startup
     {
@@ -27,8 +27,9 @@ namespace aspnet5rc
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
             services.AddBrickPile();
+
+            //services.AddMvc();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,8 +53,7 @@ namespace aspnet5rc
 
             // Add localization to the request pipeline.
             app.UseBrickPile(options =>
-            {
-                options.DefaultRequestCulture = new RequestCulture("sv");
+            {                
                 options.SupportedCultures = new List<CultureInfo>
                 {
                     new CultureInfo("en"),
@@ -64,20 +64,30 @@ namespace aspnet5rc
                     new CultureInfo("en"),
                     new CultureInfo("sv")
                 };
+                //options.DefaultRequestCulture = new RequestCulture("en");
             });
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default_localization",
-                    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default_localization",
+            //        template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
         }
 
         // Entry point for the application.
         public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+        //public static void Main(string[] args)
+        //{
+        //    var application = new WebApplicationBuilder()
+        //        .UseConfiguration(WebApplicationConfiguration.GetDefault(args))
+        //        .UseStartup<Startup>()
+        //        .Build();
+
+        //    application.Run();
+        //}
     }
 }

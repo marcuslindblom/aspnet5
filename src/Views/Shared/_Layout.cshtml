@@ -32,11 +32,14 @@
                     <a asp-controller="Home" asp-action="Index" class="navbar-brand">PR deploy v3.0.8</a>
                 </div>
                 <div class="navbar-collapse collapse">
+                    @await Component.InvokeAsync("Menu")
+                    @*
                     <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index" >Home</a></li>
+                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
                         <li><a asp-controller="Home" asp-action="About">About</a></li>
                         <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    </ul>
+                        <li><a asp-controller="Home" asp-action="About" asp-page="@(ViewBag.Page)">Foo</a></li>
+                    </ul>*@
                     @{
                         var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
                         var displayName = requestCultureFeature.RequestCulture.Culture.Name == "en" ? "English" : "Svenska";
@@ -47,7 +50,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@displayName <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="@Url.RouteUrl(new { culture = languageSwitcher, controller = ViewContext.RouteData.Values["controller"], action = ViewContext.RouteData.Values["action"] })">@languageSwitcherName</a></li>
+                                <li><a href="@Url.RouteUrl(new {culture = languageSwitcher, controller = ViewContext.RouteData.Values["controller"], action = ViewContext.RouteData.Values["action"]})">@languageSwitcherName</a></li>
                             </ul>
                         </li>
                     </ul>

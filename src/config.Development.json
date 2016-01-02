@@ -4,8 +4,8 @@
   },
   "Data": {
     "DefaultConnection": {
-      "Connectionstring": "http://live-test.ravendb.net/"
+      "Connectionstring": "http://localhost:8080"
     },
-    "DefaultDatabase": "brics"
+    "DefaultDatabase": "brickpile"
   }
 }

@@ -1,22 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.Extensions.Localization;
+using Raven.Client;
+using src.Localization;
+using src.Models;
 
-namespace aspnet5rc.Controllers
+namespace src.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IDocumentStore _documentStore;
+        public HomeController(IDocumentStore documentStore)
         {
-            return View();
+            _documentStore = documentStore;
         }
 
-        public IActionResult About()
+        public async Task<IActionResult> Index(Home home)
         {
+            return View(home);
+        }
+
+        public IActionResult About(Home home)
+        {
+            ViewData["Title"] = home?.Heading;
             ViewData["Message"] = "Your application description page.";
 
             return View();

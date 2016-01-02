@@ -1,0 +1,77 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Routing;
+
+namespace src.Routing
+{
+    public class DefaultRouter : IRouter
+    {
+        public const string ControllerKey = "controller";
+        public const string ActionKey = "action";
+        public const string CurrentPageKey = "currentPage";
+        public const string CurrentModelKey = "currentModel";
+        public const string CurrentNodeKey = "currentNode";
+        public const string DefaultAction = "index";
+
+        private readonly IRouter _target;
+        private readonly IRouteResolver _routeResolver;
+		private readonly IVirtualPathResolver _virtualPathResolver;
+        
+        public DefaultRouter(IRouter target, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver)
+        {
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (routeResolver == null)
+            {
+                throw new ArgumentNullException(nameof(routeResolver));
+            }
+
+			if (virtualPathResolver == null)
+			{
+				throw new ArgumentNullException(nameof(virtualPathResolver));
+			}
+
+            _target = target;
+            _routeResolver = routeResolver;
+			_virtualPathResolver = virtualPathResolver;
+        }
+
+        public VirtualPathData GetVirtualPath(VirtualPathContext context)
+        {
+            var path = _virtualPathResolver.Resolve(context);
+            if(!path.HasValue)
+            {
+                return null;
+            }            
+            var virtualPathData = new VirtualPathData(_target, path);
+            return virtualPathData;
+        }
+
+        public async Task RouteAsync(RouteContext context)
+        {
+            // Abort and proceed to other routes in the route table if path contains api or ui
+            string[] segments = context.HttpContext.Request.Path.Value.Split(new[] { '/' });
+            if (segments.Any(segment => segment.Equals("api", StringComparison.OrdinalIgnoreCase) ||
+                                        segment.Equals("brics", StringComparison.OrdinalIgnoreCase)))
+            {
+                return;
+            }
+
+            ResolveResult result = await _routeResolver.Resolve(context);
+
+            if (result != null)
+            {
+                context.RouteData.Values[ControllerKey] = result.Controller;
+                context.RouteData.Values[ActionKey] = result.Action;
+
+                context.HttpContext.Items[CurrentNodeKey] = result.TrieNode;
+            }
+
+            await _target.RouteAsync(context);			
+        }
+    }
+}

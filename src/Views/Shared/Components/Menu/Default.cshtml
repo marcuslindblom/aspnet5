@@ -1,0 +1,7 @@
+﻿@model IEnumerable<KeyValuePair<string, src.Routing.Trie.TrieNode>>
+
+<ul class="nav navbar-nav">
+    @foreach(var node in Model) {
+        <li><a href="@node.Key">@node.Value.Name</a></li>
+    }
+</ul>
