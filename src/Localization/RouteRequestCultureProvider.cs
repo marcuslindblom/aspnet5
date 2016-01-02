@@ -1,0 +1,66 @@
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Localization;
+using Microsoft.Extensions.Globalization;
+
+namespace src.Localization
+{
+    public class RouteRequestCultureProvider : RequestCultureProvider
+    {
+        public override Task<ProviderCultureResult> DetermineProviderCultureResult(HttpContext httpContext)
+        {
+            if (httpContext == null)
+            {
+                throw new ArgumentNullException(nameof(httpContext));
+            }
+
+            var request = httpContext.Request;
+            if (!request.Path.HasValue)
+            {
+                return Task.FromResult((ProviderCultureResult)null);
+            }
+
+            var cultureValue = Regex.Match(
+                request.Path.Value,
+                @"^/([a-z]{2})(?:$|/)",
+                RegexOptions.IgnoreCase);
+
+            if (cultureValue.Success)
+            {
+                
+                var culture = CultureInfoCache.GetCultureInfo(cultureValue.Groups[1].Value, Options.SupportedCultures);
+                var uiCulture = CultureInfoCache.GetCultureInfo(cultureValue.Groups[1].Value, Options.SupportedCultures);
+
+                if (culture == null || uiCulture == null)
+                {
+                    return Task.FromResult((ProviderCultureResult)null);
+                }
+
+                if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
+                {
+                    if (httpContext.Request.Path.Equals(new PathString("/" + culture.TwoLetterISOLanguageName)))
+                    {
+                        httpContext.Response.Redirect("/", true);
+                    }
+                    else
+                    {
+                        var remaining = httpContext.Request.Path.Value.Substring(3);
+                        httpContext.Response.Redirect(remaining, true);
+                    }
+                }
+
+                var requestCulture = new ProviderCultureResult(culture.Name, uiCulture.Name);
+
+                return Task.FromResult(requestCulture);
+            }
+            else
+            {
+                var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
+
+                return Task.FromResult(requestCulture);
+            }
+        }
+    }
+}

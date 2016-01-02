@@ -20,7 +20,7 @@ install:
 before_build:
  - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
 #- ps: dnvm install 1.0.0-beta7
- - ps: dnvm upgrade
+ - ps: dnvm upgrade -u
 #- ps: dnvm update-self
 #- ps: dnvm list
 #- ps: dnvm use 1.0.0-beta7
@@ -40,14 +40,14 @@ build_script:
 artifacts:
  - path: /AppOutput
    name: AppOutput
-   
+
 deploy:
  - provider: Environment
    name: Demo
    website_name: aspnet5rc3
    on:
     appveyor_repo_tag: true
-    
+
  - provider: Environment
    name: Test
    website_name: aspnet5rc2
