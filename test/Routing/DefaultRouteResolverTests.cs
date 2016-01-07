@@ -24,9 +24,10 @@ namespace Tests.Routing
                 // Arrange
                 var context = CreateRouteContext(path);
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync()).ReturnsAsync(trie);
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture)).ReturnsAsync(trie);
 
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
                 mapper.Setup(x => x.ControllerHasAction("Home", "Index")).Returns(true);
@@ -34,7 +35,7 @@ namespace Tests.Routing
                 var routeResolver = new DefaultRouteResolver(trieResolver.Object, mapper.Object);
 
                 // Act
-                IResolveResult result = await routeResolver.Resolve(context, new RequestCulture("en"));
+                IResolveResult result = await routeResolver.Resolve(context, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);
@@ -50,9 +51,10 @@ namespace Tests.Routing
                 // Arrange
                 var context = CreateRouteContext(path);
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync()).ReturnsAsync(trie);
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture)).ReturnsAsync(trie);
 
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
                 mapper.Setup(x => x.ControllerHasAction("Home", "about")).Returns(true);
@@ -60,7 +62,7 @@ namespace Tests.Routing
                 var routeResolver = new DefaultRouteResolver(trieResolver.Object, mapper.Object);
 
                 // Act
-                IResolveResult result = await routeResolver.Resolve(context, new RequestCulture("en"));
+                IResolveResult result = await routeResolver.Resolve(context, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);
@@ -76,9 +78,10 @@ namespace Tests.Routing
                 // Arrange
                 var context = CreateRouteContext(path);
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync()).ReturnsAsync(trie);
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture)).ReturnsAsync(trie);
 
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
                 mapper.Setup(x => x.ControllerHasAction("Article", "article")).Returns(false);
@@ -87,7 +90,7 @@ namespace Tests.Routing
                 var routeResolver = new DefaultRouteResolver(trieResolver.Object, mapper.Object);
 
                 // Act
-                IResolveResult result = await routeResolver.Resolve(context, new RequestCulture("en"));
+                IResolveResult result = await routeResolver.Resolve(context, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);
@@ -103,9 +106,10 @@ namespace Tests.Routing
                 // Arrange
                 var context = CreateRouteContext(path);
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync()).ReturnsAsync(trie);
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture)).ReturnsAsync(trie);
 
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
                 mapper.Setup(x => x.ControllerHasAction("Home", "Index")).Returns(true);
@@ -113,7 +117,7 @@ namespace Tests.Routing
                 var routeResolver = new DefaultRouteResolver(trieResolver.Object, mapper.Object);
 
                 // Act
-                IResolveResult result = await routeResolver.Resolve(context, new RequestCulture("en"));
+                IResolveResult result = await routeResolver.Resolve(context, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);

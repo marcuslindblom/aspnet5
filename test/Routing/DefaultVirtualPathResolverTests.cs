@@ -23,22 +23,24 @@ namespace Tests.Routing
             {
                 // Arrange
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync())
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture))
                     .ReturnsAsync(trie);
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
-                var httpAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+                
 
                 var page = new Page
                 {
                     Id = "homes/1"
                 };
 
-                var virtualPathResolver = new DefaultVirtualPathResolver(trieResolver.Object, mapper.Object, httpAccessor.Object);
+                var virtualPathResolver = new DefaultVirtualPathResolver(trieResolver.Object, mapper.Object);
                 var virtualPathContext = CreateVirtualPathContext(new { page });
+                var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);
@@ -51,21 +53,24 @@ namespace Tests.Routing
             {
                 // Arrange
                 var trie = CreateTrie();
+                var requestCulture = new RequestCulture("en");
+
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync())
+                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture))
                     .ReturnsAsync(trie);
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
-                var httpAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+                
                 var page = new Page
                 {
                     Id = "articles/1"
                 };
 
-                var virtualPathResolver = new DefaultVirtualPathResolver(trieResolver.Object, mapper.Object, httpAccessor.Object);
+                var virtualPathResolver = new DefaultVirtualPathResolver(trieResolver.Object, mapper.Object);
                 var virtualPathContext = CreateVirtualPathContext(new { page = page, culture = "sv" });
+                var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture);
 
                 // Assert
                 Assert.NotNull(result);

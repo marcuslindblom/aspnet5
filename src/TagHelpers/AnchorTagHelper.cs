@@ -12,7 +12,6 @@ namespace src.TagHelpers
 {
     [HtmlTargetElement("a", Attributes = ActionAttributeName)]
     [HtmlTargetElement("a", Attributes = ControllerAttributeName)]
-    [HtmlTargetElement("a", Attributes = PageAttributeName)]
     [HtmlTargetElement("a", Attributes = RouteValuesPrefix + "*")]
     public class AnchorTagHelper : TagHelper
     {
@@ -20,7 +19,6 @@ namespace src.TagHelpers
 
         private const string ActionAttributeName = "asp-action";
         private const string ControllerAttributeName = "asp-controller";
-        private const string PageAttributeName = "asp-page";
         private const string RouteValuesPrefix = "asp-route-";
 
         public AnchorTagHelper(IHttpContextAccessor contextAccessor)
@@ -33,9 +31,6 @@ namespace src.TagHelpers
 
         [HtmlAttributeName(ControllerAttributeName)]
         public string Controller { get; set; }
-
-        [HtmlAttributeName(PageAttributeName)]
-        public Page Page { get; set; }
 
         [HtmlAttributeName(DictionaryAttributePrefix = RouteValuesPrefix)]
         public IDictionary<string, object> RouteValues { get; set; } =
@@ -52,11 +47,6 @@ namespace src.TagHelpers
             {
                 throw new ArgumentNullException(nameof(output));
             }
-
-            if (Page != null)
-            {
-                RouteValues.Add("page", Page);
-            }            
 
             // Convert from Dictionary<string, string> to Dictionary<string, object>.
             var routeValues = RouteValues.ToDictionary(

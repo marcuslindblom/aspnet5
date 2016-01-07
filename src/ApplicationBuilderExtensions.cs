@@ -1,8 +1,6 @@
 using System;
 using System.Globalization;
 using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,7 +41,6 @@ namespace src
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
             var controllerTypeProvider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
-            var accessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
 
             IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
 
@@ -71,12 +68,12 @@ namespace src
                 routes.Routes.Insert(0, new DefaultRouter(
                     routes.DefaultHandler,
                     new DefaultRouteResolver(
-                        new RouteResolverTrie(documentStore, accessor),
+                        new RouteResolverTrie(documentStore),
                         new ControllerMapper(controllerTypeProvider)),
                     new DefaultVirtualPathResolver(
-                        new RouteResolverTrie(documentStore, accessor),
-                        new ControllerMapper(controllerTypeProvider),
-                        accessor)));
+                        new RouteResolverTrie(documentStore),
+                        new ControllerMapper(controllerTypeProvider)),
+                    new RequestCulture("en")));
 
                 routes.MapRoute(
                     name: "default_localization",
@@ -114,7 +111,6 @@ namespace src
             using (var session = documentStore.OpenAsyncSession())
             {
                 // Create a page with default language
-
                 await session
                     .LocalizeFor(new CultureInfo("en"))
                     .ForModel(new Home { Heading = "In english" })
@@ -123,7 +119,7 @@ namespace src
 
                 await session
                     .LocalizeFor(new CultureInfo("en"))
-                    .ForModel(new Home { Heading = "About this yo" })
+                    .ForModel(new About { Heading = "ASP.NET 5 ? RavenDB" })
                     .ForUrl("/about")
                     .StoreAsync(new Page { Name = "About" });
 
@@ -140,10 +136,9 @@ namespace src
             using (var session = documentStore.OpenAsyncSession())
             {
                 // Create a new language for a page
-
                 var home = await session.LoadAsync<Page>("pages/1");
-
                 await session
+                    //.For(home)
                     .LocalizeFor(home, new CultureInfo("sv"))
                     .ForModel(new Home { Heading = "På svenska" })
                     .ForUrl("/")
@@ -153,7 +148,7 @@ namespace src
 
                 await session
                     .LocalizeFor(about, new CultureInfo("sv"))
-                    .ForModel(new Home { Heading = "Om oss yo" })
+                    .ForModel(new About { Heading = "Om oss" })
                     .ForUrl("/om-oss")
                     .StoreAsync(new Page { Name = "Om oss" });
 

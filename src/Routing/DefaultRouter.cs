@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Routing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
+using Microsoft.Extensions.Globalization;
 
 namespace src.Routing
 {
@@ -13,6 +15,7 @@ namespace src.Routing
         private readonly IRouter _next;
         private readonly IRouteResolver _routeResolver;
         private readonly IVirtualPathResolver _virtualPathResolver;
+        private readonly RequestCulture _defaultRequestCulture;
 
         public const string ControllerKey = "controller";
         public const string ActionKey = "action";
@@ -20,7 +23,7 @@ namespace src.Routing
         public const string CurrentNodeKey = "currentNode";
         public const string CultureKey = "culture";
 
-        public DefaultRouter(IRouter next, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver)
+        public DefaultRouter(IRouter next, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver, RequestCulture defaultRequestCulture)
         {
             if (next == null)
             {
@@ -37,20 +40,33 @@ namespace src.Routing
                 throw new ArgumentNullException(nameof(virtualPathResolver));
             }
 
+            if (defaultRequestCulture == null)
+            {
+                throw new ArgumentNullException(nameof(defaultRequestCulture));
+            }
+
             _next = next;
             _routeResolver = routeResolver;
             _virtualPathResolver = virtualPathResolver;
+            _defaultRequestCulture = defaultRequestCulture;
         }
 
         public VirtualPathData GetVirtualPath(VirtualPathContext context)
         {
-            var path = _virtualPathResolver.Resolve(context);
+            var requestCulture = DetectRequestCulture(context.Context);
+            var path = _virtualPathResolver.Resolve(context, _defaultRequestCulture, requestCulture);
             if (!path.HasValue)
             {
                 // We just want to act as a pass-through for link generation
                 return _next.GetVirtualPath(context);
             }
+
+            //if(requestCulture.Culture.TwoLetterISOLanguageName == _defaultRequestCulture.Culture.TwoLetterISOLanguageName) { 
+            //    path.StartsWithSegments("/" + _defaultRequestCulture.Culture.TwoLetterISOLanguageName, StringComparison.InvariantCultureIgnoreCase, out path);
+            //}
+
             var virtualPathData = new VirtualPathData(_next, path);
+
             context.IsBound = true;
             return virtualPathData;
         }

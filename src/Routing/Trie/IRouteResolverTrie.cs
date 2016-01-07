@@ -5,6 +5,6 @@ namespace src.Routing.Trie
 {
     public interface IRouteResolverTrie
     {
-        Task<Trie> LoadTrieAsync();
+        Task<Trie> LoadTrieAsync(RequestCulture requestCulture);
     }
 }

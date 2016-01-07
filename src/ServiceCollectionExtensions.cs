@@ -69,8 +69,7 @@ namespace src
             });
 
             services.AddInstance(DocumentStore);
-            services.AddTransient<IRouteResolverTrie>(provider => new RouteResolverTrie(provider.GetService<IDocumentStore>(), provider.GetService<IHttpContextAccessor>()));
-
+            services.AddTransient<IRouteResolverTrie>(provider => new RouteResolverTrie(provider.GetService<IDocumentStore>()));
         }
     }
 }

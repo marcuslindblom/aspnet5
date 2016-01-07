@@ -1,7 +1,14 @@
-﻿@model IEnumerable<KeyValuePair<string, src.Routing.Trie.TrieNode>>
+﻿@using System.Threading.Tasks
+@using Microsoft.AspNet.Http.Features
+@using Microsoft.AspNet.Localization
+@model IEnumerable<KeyValuePair<string, src.Routing.Trie.TrieNode>>
+
+@{
+    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+}
 
 <ul class="nav navbar-nav">
-    @foreach(var node in Model) {
-        <li><a href="@node.Key">@node.Value.Name</a></li>
+    @foreach (var node in Model) {
+        <li><a asp-action="Index" asp-route-id="@(node.Value.PageId)">@node.Value.Name</a></li>        
     }
 </ul>

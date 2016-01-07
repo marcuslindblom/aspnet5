@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
+using src.Models;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace src.Controllers
 {
     [AllowAnonymous]
-    public class FooController : Controller
+    public class AboutController : Controller
     {
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Index(About model)
         {
-            return Content("Hello World...");
+            ViewData["Title"] = model?.Heading;
+            ViewData["Message"] = "Your application description page.";
+            return View();
         }
     }
 }

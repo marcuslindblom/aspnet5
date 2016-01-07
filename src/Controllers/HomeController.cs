@@ -17,18 +17,18 @@ namespace src.Controllers
             _documentStore = documentStore;
         }
 
-        public async Task<IActionResult> Index(Home home)
+        public IActionResult Index(Home home)
         {
             return View(home);
         }
 
-        public IActionResult About(Home home)
-        {
-            ViewData["Title"] = home?.Heading;
-            ViewData["Message"] = "Your application description page.";
+        //public IActionResult About(Home home)
+        //{
+        //    ViewData["Title"] = home?.Heading;
+        //    ViewData["Message"] = "Your application description page.";
 
-            return View();
-        }
+        //    return View();
+        //}
 
         public IActionResult Contact()
         {

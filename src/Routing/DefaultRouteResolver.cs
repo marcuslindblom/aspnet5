@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Localization;
@@ -24,7 +25,7 @@ namespace src.Routing
 
         public async Task<IResolveResult> Resolve(RouteContext context, RequestCulture requestCulture)
         {
-            var trie = await _routeResolverTrie.LoadTrieAsync();
+            var trie = await _routeResolverTrie.LoadTrieAsync(requestCulture);
 
             if (trie == null || !trie.Any()) return null;
 
@@ -33,12 +34,28 @@ namespace src.Routing
 
             // Start localization
 
-            PathString remaining;
+            PathString remaining = context.HttpContext.Request.Path;
 
-            if (!context.HttpContext.Request.Path.StartsWithSegments("/" + requestCulture.Culture.TwoLetterISOLanguageName, out remaining))
+            //var cultureValue = Regex.Match(
+            //    context.HttpContext.Request.Path,
+            //    @"^/([a-z]{2})(?:$|/)",
+            //    RegexOptions.IgnoreCase);
+
+            //if (cultureValue.Success)
+            //{
+
+            //}
+
+            if (context.HttpContext.Request.Path.Value.StartsWith("/" + requestCulture.Culture.TwoLetterISOLanguageName))
             {
-                remaining = context.HttpContext.Request.Path;
+                remaining = remaining.Value.Substring(3);
             }
+
+
+            //if (context.HttpContext.Request.Path.StartsWithSegments("/" + requestCulture.Culture.TwoLetterISOLanguageName, out remaining))
+            //{
+            //    //remaining = context.HttpContext.Request.Path;
+            //}
 
             // End localization
 

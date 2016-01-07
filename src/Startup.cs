@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNet.Localization;
 using System.Globalization;
 using src;
+using src.Models;
 
 namespace src
 {
@@ -28,6 +29,8 @@ namespace src
         {
             // Add framework services.
             services.AddBrickPile();
+
+            services.AddTransient<LayoutModel>();
 
             //services.AddMvc();            
         }
