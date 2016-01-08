@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
@@ -17,18 +20,10 @@ namespace src.Controllers
             _documentStore = documentStore;
         }
 
-        public IActionResult Index(Home home)
+        public async Task<IActionResult> Index(Home home)
         {
             return View(home);
         }
-
-        //public IActionResult About(Home home)
-        //{
-        //    ViewData["Title"] = home?.Heading;
-        //    ViewData["Message"] = "Your application description page.";
-
-        //    return View();
-        //}
 
         public IActionResult Contact()
         {

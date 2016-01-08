@@ -1,4 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Routing;
@@ -50,7 +54,7 @@ namespace src.Routing
 	            PathString path = new PathString();
 	            if (defaultRequestCulture.Culture.LCID != requestCulture.Culture.LCID)
 	            {
-	                path.Add("/" + requestCulture.Culture.TwoLetterISOLanguageName);
+	                path = path.Add("/" + requestCulture.Culture.TwoLetterISOLanguageName);
 	            }
 
 	            return path.Add(node.Key);
@@ -88,4 +92,25 @@ namespace src.Routing
             return null;
 	    }
 	}
+    public static class PathStringExtensions
+    {
+        public static bool DetectCultureSegment(this PathString pathString, IList<CultureInfo> supportedCultures, out string cultureName)
+        {
+            foreach (var culture in supportedCultures)
+            {
+                string value1 = pathString.Value ?? string.Empty;
+                string value2 = "/" + culture.TwoLetterISOLanguageName ?? string.Empty;
+                if (value1.StartsWith(value2, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (value1.Length == value2.Length || value1[value2.Length] == '/')
+                    {
+                        cultureName = culture.Name;
+                        return true;
+                    }
+                }
+            }
+            cultureName = string.Empty;
+            return false;
+        }
+    }
 }

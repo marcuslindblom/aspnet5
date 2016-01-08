@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Localization;
@@ -32,32 +31,12 @@ namespace src.Routing
             // Set the default action to index
             var action = DefaultRouter.DefaultAction;
 
-            // Start localization
-
             PathString remaining = context.HttpContext.Request.Path;
-
-            //var cultureValue = Regex.Match(
-            //    context.HttpContext.Request.Path,
-            //    @"^/([a-z]{2})(?:$|/)",
-            //    RegexOptions.IgnoreCase);
-
-            //if (cultureValue.Success)
-            //{
-
-            //}
 
             if (context.HttpContext.Request.Path.Value.StartsWith("/" + requestCulture.Culture.TwoLetterISOLanguageName))
             {
                 remaining = remaining.Value.Substring(3);
             }
-
-
-            //if (context.HttpContext.Request.Path.StartsWithSegments("/" + requestCulture.Culture.TwoLetterISOLanguageName, out remaining))
-            //{
-            //    //remaining = context.HttpContext.Request.Path;
-            //}
-
-            // End localization
 
             var segments = remaining.Value.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 

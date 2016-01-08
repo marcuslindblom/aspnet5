@@ -61,10 +61,6 @@ namespace src.Routing
                 return _next.GetVirtualPath(context);
             }
 
-            //if(requestCulture.Culture.TwoLetterISOLanguageName == _defaultRequestCulture.Culture.TwoLetterISOLanguageName) { 
-            //    path.StartsWithSegments("/" + _defaultRequestCulture.Culture.TwoLetterISOLanguageName, StringComparison.InvariantCultureIgnoreCase, out path);
-            //}
-
             var virtualPathData = new VirtualPathData(_next, path);
 
             context.IsBound = true;

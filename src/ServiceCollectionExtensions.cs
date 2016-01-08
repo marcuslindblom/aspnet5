@@ -47,6 +47,8 @@ namespace src
             store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]);
             store.Conventions.RegisterIdConvention<Site>((dbname, commands, site) => "sites/" + site.Culture.Name);
             store.Conventions.RegisterAsyncIdConvention<Site>((dbname, commands, site) => new CompletedTask<string>("sites/" + site.Culture.Name));
+            //store.Conventions.RegisterIdConvention<Page>((databaseName, commands, page) => "pages/" + page.Id);
+            //store.Conventions.RegisterAsyncIdConvention<ApplicationBuilderExtensions.MyClass>((dbname, commands, page) => new CompletedTask<string>("myclasses/" + page.PageLink));
             return store;
         });
 

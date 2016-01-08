@@ -1,33 +1,46 @@
-﻿using Microsoft.AspNet.Http;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
+using Microsoft.AspNet.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Raven.Client;
+using src.Routing.Trie;
 
 namespace src.Models
 {
     public class LayoutModel
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public LayoutModel(IDocumentStore documentStore, IHttpContextAccessor httpContextAccessor)
-        {
+        private readonly IRouteResolverTrie _routeResolverTrie;
+
+
+        public LayoutModel(IDocumentStore documentStore, IHttpContextAccessor httpContextAccessor, IRouteResolverTrie routeResolverTrie)
+        {            
             _httpContextAccessor = httpContextAccessor;
+            _routeResolverTrie = routeResolverTrie;
             Initialize(documentStore);
         }
 
-        public void Initialize(IDocumentStore documentStore)
+        public async void Initialize(IDocumentStore documentStore)
         {
-            //using (var session = documentStore.OpenSession())
-            //{
-            //    var start = session.Load<Home>("pages/1/content");
-            //    Title = start.Heading;
-            //}
+            var trie = await _routeResolverTrie.LoadTrieAsync(new RequestCulture(LanguageName));
+            TrieNode node;
+            trie.TryGetNode("/", out node);
+            if (node != null)
+            {
+                Id = node.PageId;
+            }
         }
+
+        public string Id { get; set; }
 
         public string MetaTitle => "The meta title from the page";
 
         public string MetaDescription => "The meta description from the page";
 
-        public string CanonicalUrl => "https://aspnet5rc2.azurewebsites.net/";
+        public string CanonicalUrl => "https://aspnet5rc.azurewebsites.net/";
 
         public string LanguageName
         {

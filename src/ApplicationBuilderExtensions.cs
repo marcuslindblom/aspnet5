@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Localization;
@@ -75,9 +76,9 @@ namespace src
                         new ControllerMapper(controllerTypeProvider)),
                     new RequestCulture("en")));
 
-                routes.MapRoute(
-                    name: "default_localization",
-                    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
+                //routes.MapRoute(
+                //    name: "default_localization",
+                //    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     name: "default",
@@ -130,7 +131,6 @@ namespace src
                     .StoreAsync(new Page { Name = "Contact" });
 
                 await session.SaveChangesAsync();
-
             }
 
             using (var session = documentStore.OpenAsyncSession())
@@ -153,7 +153,6 @@ namespace src
                     .StoreAsync(new Page { Name = "Om oss" });
 
                 await session.SaveChangesAsync();
-
             }
 
         }
