@@ -1,7 +1,8 @@
-﻿namespace src.Models
+
+namespace src.Models
 {
     [ViewModel]
-    public class Home
+    public class About
     {
         public string Heading { get; set; }
     }

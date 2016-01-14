@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Routing;
@@ -21,7 +17,7 @@ namespace src.Routing
         private IRouteResolverTrie _routeResolverTrie;
         private IControllerMapper _controllerMapper;
 
-	    public DefaultVirtualPathResolver(IRouteResolverTrie routeResolverTrie, IControllerMapper controllerMapper)
+        public DefaultVirtualPathResolver(IRouteResolverTrie routeResolverTrie, IControllerMapper controllerMapper)
         {
             _routeResolverTrie = routeResolverTrie;
             _controllerMapper = controllerMapper;
@@ -91,26 +87,5 @@ namespace src.Routing
 
             return null;
 	    }
-	}
-    public static class PathStringExtensions
-    {
-        public static bool DetectCultureSegment(this PathString pathString, IList<CultureInfo> supportedCultures, out string cultureName)
-        {
-            foreach (var culture in supportedCultures)
-            {
-                string value1 = pathString.Value ?? string.Empty;
-                string value2 = "/" + culture.TwoLetterISOLanguageName ?? string.Empty;
-                if (value1.StartsWith(value2, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (value1.Length == value2.Length || value1[value2.Length] == '/')
-                    {
-                        cultureName = culture.Name;
-                        return true;
-                    }
-                }
-            }
-            cultureName = string.Empty;
-            return false;
-        }
     }
 }

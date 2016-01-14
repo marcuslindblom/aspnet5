@@ -40,7 +40,7 @@ namespace src.Localization
                 }
 
                 //if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
-                if(culture.Name == new CultureInfo("en").TwoLetterISOLanguageName)
+                if(culture.Name == new CultureInfo("sv").TwoLetterISOLanguageName)
                 {
                     if (httpContext.Request.Path.Equals(new PathString("/" + culture.TwoLetterISOLanguageName)))
                     {
@@ -60,7 +60,7 @@ namespace src.Localization
             else
             {
                 //var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
-                var requestCulture = new ProviderCultureResult(new CultureInfo("en").TwoLetterISOLanguageName, new CultureInfo("en").TwoLetterISOLanguageName);
+                var requestCulture = new ProviderCultureResult(new CultureInfo("sv").TwoLetterISOLanguageName, new CultureInfo("sv").TwoLetterISOLanguageName);
 
                 return Task.FromResult(requestCulture);
             }

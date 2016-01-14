@@ -2,7 +2,7 @@
 
 namespace src
 {
-    public class ModelAttribute : Attribute {
+    public class ViewModelAttribute : Attribute {
         public int Order { get; set; }
     }
 }

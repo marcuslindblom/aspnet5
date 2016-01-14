@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Routing;
 using Moq;
@@ -24,10 +20,10 @@ namespace Tests.Routing
                 // Arrange
                 var trie = CreateTrie();
 
-                var requestCulture = new RequestCulture("en");
+                var currentRequestCulture = new Mock<RequestCulture>("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
-                trieResolver.Setup(t => t.LoadTrieAsync(requestCulture))
+                trieResolver.Setup(t => t.LoadTrieAsync(currentRequestCulture.Object))
                     .ReturnsAsync(trie);
 
                 var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);                
@@ -43,7 +39,7 @@ namespace Tests.Routing
                 var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, currentRequestCulture.Object);
 
                 // Assert
                 Assert.NotNull(result);
@@ -52,11 +48,11 @@ namespace Tests.Routing
             }
 
             [Fact]
-            public void Can_Resolve_Path_To_Page_With_Culture_Set_To_SV()
+            public void Can_Resolve_Path_To_Page_To_Specified_Culture()
             {
                 // Arrange
                 var trie = CreateTrie();
-                var requestCulture = new Mock<RequestCulture>("en");
+                var currentRequestCulture = new Mock<RequestCulture>("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
                 trieResolver.Setup(t => t.LoadTrieAsync(It.IsAny<RequestCulture>()))
@@ -74,7 +70,7 @@ namespace Tests.Routing
                 var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture.Object);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, currentRequestCulture.Object);
 
                 // Assert
                 Assert.NotNull(result);
@@ -87,7 +83,7 @@ namespace Tests.Routing
             {
                 // Arrange
                 var trie = CreateTrie();
-                var requestCulture = new Mock<RequestCulture>("en");
+                var currentRequestCulture = new Mock<RequestCulture>("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
                 trieResolver.Setup(t => t.LoadTrieAsync(It.IsAny<RequestCulture>()))
@@ -105,7 +101,7 @@ namespace Tests.Routing
                 var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture.Object);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, currentRequestCulture.Object);
 
                 // Assert
                 Assert.NotNull(result);
@@ -118,7 +114,7 @@ namespace Tests.Routing
             {
                 // Arrange
                 var trie = CreateTrie();
-                var requestCulture = new Mock<RequestCulture>("en");
+                var currentRequestCulture = new Mock<RequestCulture>("en");
 
                 var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
                 trieResolver.Setup(t => t.LoadTrieAsync(It.IsAny<RequestCulture>()))
@@ -136,12 +132,43 @@ namespace Tests.Routing
                 var defaultRequestCulture = new RequestCulture("en");
 
                 // Act
-                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, requestCulture.Object);
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, currentRequestCulture.Object);
 
                 // Assert
                 Assert.NotNull(result);
                 Assert.True(result.HasValue);
                 Assert.Equal("/article", result.Value);
+            }
+
+            [Fact]
+            public void Can_Resolve_Path_To_Page_With_Extra_Route_Values()
+            {
+                // Arrange
+                var trie = CreateTrie();
+                var currentRequestCulture = new Mock<RequestCulture>("en");
+
+                var trieResolver = new Mock<IRouteResolverTrie>(MockBehavior.Strict);
+                trieResolver.Setup(t => t.LoadTrieAsync(It.IsAny<RequestCulture>()))
+                    .ReturnsAsync(trie);
+
+                var mapper = new Mock<IControllerMapper>(MockBehavior.Strict);
+
+                var page = new Page
+                {
+                    Id = "articles/1"
+                };
+
+                var virtualPathResolver = new DefaultVirtualPathResolver(trieResolver.Object, mapper.Object);
+                var virtualPathContext = CreateVirtualPathContext(new { page, foo = "bar" });
+                var defaultRequestCulture = new RequestCulture("en");
+
+                // Act
+                var result = virtualPathResolver.Resolve(virtualPathContext, defaultRequestCulture, currentRequestCulture.Object);
+
+                // Assert
+                Assert.NotNull(result);
+                Assert.True(result.HasValue);
+                Assert.Equal("/article?foo=bar", result.Value);
             }
         }
 

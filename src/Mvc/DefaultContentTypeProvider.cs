@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.Infrastructure;
-using Microsoft.AspNet.StaticFiles;
 
 namespace src.Mvc
 {
@@ -26,7 +23,7 @@ namespace src.Mvc
         }
         private bool HasContentTypeAttribute(TypeInfo typeInfo)
         {
-            return typeInfo.GetCustomAttributes(typeof(ModelAttribute), false).Length > 0;
+            return typeInfo.GetCustomAttributes(typeof(ViewModelAttribute), false).Length > 0;
         }
 
 

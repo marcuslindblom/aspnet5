@@ -38,12 +38,10 @@ namespace src.Mvc.ModelBinding
         private async Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext, IModelBinder binder)
         {
             var result = await binder.BindModelAsync(bindingContext);
-            var modelBindingResult = result != ModelBindingResult.NoResult ?
-                result :
-                ModelBindingResult.Failed(bindingContext.FieldName);
+            var modelBindingResult = result != ModelBindingResult.NoResult
+                ? result
+                : ModelBindingResult.NoResult;
 
-            // Were able to resolve a binder type.
-            // Always tell the model binding system to skip other model binders.
             return modelBindingResult;
         }
 
@@ -66,7 +64,7 @@ namespace src.Mvc.ModelBinding
 
         private static Type GetModelBinder(Type modelType)
         {
-            if (modelType.IsDefined(typeof(ModelAttribute), false))
+            if (modelType.IsDefined(typeof(ViewModelAttribute), false))
             {
                 return typeof(ModelModelBinder);
             }

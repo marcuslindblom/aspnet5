@@ -5,6 +5,16 @@ namespace src.Localization
 {
     public static class DocumentSessionExtensions
     {
+        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale = null)
+        {
+            return new LocalizationOperation(session, locale, fallbackLocale);
+        }
+
+        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, Page page, CultureInfo locale, CultureInfo fallbackLocale = null)
+        {
+            return new LocalizationOperation(session, locale, fallbackLocale) { Page = page };
+        }
+
         public static IAsyncLocalizationOperation LocalizeFor(this IAsyncDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale = null)
         {
             return new AsyncLocalizationOperation(session, locale, fallbackLocale);

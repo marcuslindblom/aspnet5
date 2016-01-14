@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Mvc.ModelBinding;
@@ -35,7 +34,8 @@ namespace src.Mvc.ModelBinding
 
             using (var session = _documentStore.OpenAsyncSession())
             {
-                return await ModelBindingResult.SuccessAsync(bindingContext.FieldName, await session.LoadAsync<dynamic>(string.Join("/", node.PageId, requestCulture.Culture.TwoLetterISOLanguageName,"content")));
+                return await ModelBindingResult.SuccessAsync(bindingContext.FieldName,
+                    await session.LoadAsync<dynamic>(string.Join("/", node.PageId, requestCulture.Culture.TwoLetterISOLanguageName,"content")));
             }
         }
     }

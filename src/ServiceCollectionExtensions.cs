@@ -2,11 +2,13 @@
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Mvc;
+using Microsoft.AspNet.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Abstractions.Util;
 using Raven.Client;
 using Raven.Client.Document;
+using src.Models;
 using src.Mvc;
 using src.Mvc.ModelBinding;
 using src.Routing.Trie;
@@ -72,6 +74,7 @@ namespace src
 
             services.AddInstance(DocumentStore);
             services.AddTransient<IRouteResolverTrie>(provider => new RouteResolverTrie(provider.GetService<IDocumentStore>()));
+            services.AddTransient<IBricsContextAccessor>(provider => new BricsContextAccessor(provider.GetService<IHttpContextAccessor>(), provider.GetService<IDocumentStore>()));
         }
     }
 }

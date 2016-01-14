@@ -8,7 +8,7 @@ namespace src
     /// </summary>
     public sealed class Page
     {
-        [ScaffoldColumn(false)]
+        //[ScaffoldColumn(false)]
         public string Id { get; set; }
 
         public DateTime? Changed { get; set; }

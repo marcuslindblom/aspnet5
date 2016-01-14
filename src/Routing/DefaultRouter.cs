@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Routing;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
-using Microsoft.Extensions.Globalization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.OptionsModel;
+using Microsoft.Extensions.WebEncoders;
 
 namespace src.Routing
 {
@@ -16,12 +17,14 @@ namespace src.Routing
         private readonly IRouteResolver _routeResolver;
         private readonly IVirtualPathResolver _virtualPathResolver;
         private readonly RequestCulture _defaultRequestCulture;
+        private RouteOptions _options;
 
         public const string ControllerKey = "controller";
         public const string ActionKey = "action";
         public const string DefaultAction = "Index";
         public const string CurrentNodeKey = "currentNode";
         public const string CultureKey = "culture";
+        public const string CurrentPageKey = "currentPage";
 
         public DefaultRouter(IRouter next, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver, RequestCulture defaultRequestCulture)
         {
@@ -53,6 +56,8 @@ namespace src.Routing
 
         public VirtualPathData GetVirtualPath(VirtualPathContext context)
         {
+            EnsureOptions(context.Context);
+
             var requestCulture = DetectRequestCulture(context.Context);
             var path = _virtualPathResolver.Resolve(context, _defaultRequestCulture, requestCulture);
             if (!path.HasValue)
@@ -60,11 +65,12 @@ namespace src.Routing
                 // We just want to act as a pass-through for link generation
                 return _next.GetVirtualPath(context);
             }
-
+          
             var virtualPathData = new VirtualPathData(_next, path);
 
             context.IsBound = true;
-            return virtualPathData;
+
+            return NormalizeVirtualPath(virtualPathData);
         }
 
         public async Task RouteAsync(RouteContext context)
@@ -87,7 +93,7 @@ namespace src.Routing
                 context.RouteData.Values[ControllerKey] = result.Controller;
                 context.RouteData.Values[ActionKey] = result.Action;
 
-                context.HttpContext.Items[CurrentNodeKey] = result.TrieNode;
+                context.HttpContext .Items[CurrentNodeKey] = result.TrieNode;
             }
 
             await _next.RouteAsync(context);
@@ -97,6 +103,54 @@ namespace src.Routing
         {
             var requestCultureFeature = context.Features.Get<IRequestCultureFeature>();
             return requestCultureFeature.RequestCulture;
+        }
+
+        private VirtualPathData NormalizeVirtualPath(VirtualPathData pathData)
+        {
+            if (pathData == null)
+            {
+                return pathData;
+            }
+
+            var url = pathData.VirtualPath;
+
+            if (!string.IsNullOrEmpty(url) && (_options.LowercaseUrls || _options.AppendTrailingSlash))
+            {
+                var indexOfSeparator = url.Value.IndexOfAny(new char[] { '?', '#' });
+                var urlWithoutQueryString = url;
+                var queryString = string.Empty;
+
+                if (indexOfSeparator != -1)
+                {
+                    urlWithoutQueryString = url.Value.Substring(0, indexOfSeparator);
+                    queryString = url.Value.Substring(indexOfSeparator);
+                }
+
+                if (_options.LowercaseUrls)
+                {
+                    urlWithoutQueryString = urlWithoutQueryString.Value.ToLowerInvariant();
+                }
+
+                if (_options.AppendTrailingSlash && !urlWithoutQueryString.Value.EndsWith("/"))
+                {
+                    urlWithoutQueryString += "/";
+                }
+
+                // queryString will contain the delimiter ? or # as the first character, so it's safe to append.
+                url = urlWithoutQueryString + queryString;
+
+                return new VirtualPathData(pathData.Router, url, pathData.DataTokens);
+            }
+
+            return pathData;
+        }
+
+        private void EnsureOptions(HttpContext context)
+        {
+            if (_options == null)
+            {
+                _options = context.RequestServices.GetRequiredService<IOptions<RouteOptions>>().Value;
+            }
         }
     }
 }

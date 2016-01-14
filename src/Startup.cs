@@ -69,6 +69,8 @@ namespace src
                 };
                 //options.DefaultRequestCulture = new RequestCulture("en");
             });
+                
+            
 
             //app.UseMvc(routes =>
             //{

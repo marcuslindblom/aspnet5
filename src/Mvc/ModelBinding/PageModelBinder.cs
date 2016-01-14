@@ -34,10 +34,9 @@ namespace src.Mvc.ModelBinding
 
             using (var session = _documentStore.OpenAsyncSession())
             {
-                return
-                    await
-                        ModelBindingResult.SuccessAsync(bindingContext.ModelName,
-                            await session.LocalizeFor(requestCulture.Culture).LoadAsync<Page>(node.PageId));
+                var localizedPage = await session.LocalizeFor(requestCulture.Culture).LoadAsync<Page>(node.PageId);
+                bindingContext.OperationBindingContext.HttpContext.Items[DefaultRouter.CurrentPageKey] = localizedPage;
+                return await ModelBindingResult.SuccessAsync(bindingContext.ModelName, localizedPage);
             }
         }
     }

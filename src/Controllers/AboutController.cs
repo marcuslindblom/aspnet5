@@ -12,9 +12,9 @@ namespace src.Controllers
         // GET: /<controller>/
         public IActionResult Index(About model)
         {
-            ViewData["Title"] = model?.Heading;
+            ViewData["Title"] = "Heading";
             ViewData["Message"] = "Your application description page.";
-            return View();
+            return View(model);
         }
     }
 }

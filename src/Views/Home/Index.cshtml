@@ -1,6 +1,13 @@
 @{
-    ViewData["Title"] = Model.Heading;
+//ViewData["Title"] = Model.Heading;
 }
+
+@using (Html.BeginForm("Save", "Home"))
+{
+    @Html.EditorForModel()
+    <input type="submit" value="save"/>
+}
+
 
 <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">

@@ -1,44 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNet.Http;
+﻿using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Raven.Client;
-using src.Routing.Trie;
 
 namespace src.Models
 {
     public class LayoutModel
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IRouteResolverTrie _routeResolverTrie;
+        private readonly IBricsContextAccessor _bricsContextAccessor;
 
-
-        public LayoutModel(IDocumentStore documentStore, IHttpContextAccessor httpContextAccessor, IRouteResolverTrie routeResolverTrie)
+        public LayoutModel(IDocumentStore documentStore, IHttpContextAccessor httpContextAccessor, IBricsContextAccessor bricsContextAccessor)
         {            
             _httpContextAccessor = httpContextAccessor;
-            _routeResolverTrie = routeResolverTrie;
+            _bricsContextAccessor = bricsContextAccessor;
             Initialize(documentStore);
         }
 
-        public async void Initialize(IDocumentStore documentStore)
+        public void Initialize(IDocumentStore documentStore)
         {
-            var trie = await _routeResolverTrie.LoadTrieAsync(new RequestCulture(LanguageName));
-            TrieNode node;
-            trie.TryGetNode("/", out node);
-            if (node != null)
-            {
-                Id = node.PageId;
-            }
+            Id = "pages/1";
+            MetaTitle = _bricsContextAccessor.CurrentPage.Metadata.MetaTitle;
+            MetaDescription = _bricsContextAccessor.CurrentPage.Metadata.MetaDescription;
         }
 
         public string Id { get; set; }
 
-        public string MetaTitle => "The meta title from the page";
+        //public string MetaTitle => "The meta title from the page";
+        public string MetaTitle { get; set; }
 
-        public string MetaDescription => "The meta description from the page";
+        //public string MetaDescription => "The meta description from the page";
+        public string MetaDescription { get; set; }
 
         public string CanonicalUrl => "https://aspnet5rc.azurewebsites.net/";
 

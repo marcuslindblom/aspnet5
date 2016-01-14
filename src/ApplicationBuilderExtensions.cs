@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Localization;
@@ -38,7 +37,7 @@ namespace src
                 Options = options
             });
 
-            app.UseRequestLocalization(options, new RequestCulture("en"));
+            app.UseRequestLocalization(options, new RequestCulture("sv"));
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
             var controllerTypeProvider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
@@ -74,11 +73,15 @@ namespace src
                     new DefaultVirtualPathResolver(
                         new RouteResolverTrie(documentStore),
                         new ControllerMapper(controllerTypeProvider)),
-                    new RequestCulture("en")));
+                    new RequestCulture("sv")));
 
                 //routes.MapRoute(
                 //    name: "default_localization",
                 //    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "AreasRoute",
+                    template: "{area}/{controller=Dashboard}/{action=index}");
 
                 routes.MapRoute(
                     name: "default",
@@ -124,12 +127,6 @@ namespace src
                     .ForUrl("/about")
                     .StoreAsync(new Page { Name = "About" });
 
-                await session
-                    .LocalizeFor(new CultureInfo("en"))
-                    .ForModel(new Home { Heading = "Contact this" })
-                    .ForUrl("/contact")
-                    .StoreAsync(new Page { Name = "Contact" });
-
                 await session.SaveChangesAsync();
             }
 
@@ -148,7 +145,7 @@ namespace src
 
                 await session
                     .LocalizeFor(about, new CultureInfo("sv"))
-                    .ForModel(new About { Heading = "Om oss" })
+                    .ForModel(new About { Heading = "Om oss" } )
                     .ForUrl("/om-oss")
                     .StoreAsync(new Page { Name = "Om oss" });
 

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Authorization;
 using Microsoft.AspNet.Mvc;
@@ -20,9 +17,9 @@ namespace src.Controllers
             _documentStore = documentStore;
         }
 
-        public async Task<IActionResult> Index(Home home)
+        public IActionResult Index(Home home, Page currentPage)
         {
-            return View(home);
+            return View(currentPage);
         }
 
         public IActionResult Contact()
@@ -35,6 +32,25 @@ namespace src.Controllers
         public IActionResult Error()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Save([FromForm]Page page)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var session = _documentStore.OpenAsyncSession())
+                {
+                    var p = await session.LocalizeFor(new CultureInfo("sv")).LoadAsync<Page>(page.Id);
+                    
+                    if (await TryUpdateModelAsync(p))
+                    {
+                        await session.LocalizeFor(p, new CultureInfo("sv")).StoreAsync(p);
+                        await session.SaveChangesAsync();
+                    }
+                }
+            }
+            return RedirectToAction("Index");
         }
     }
 }
