@@ -20,19 +20,19 @@ install:
 before_build:
  - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
 #- ps: dnvm install 1.0.0-beta7
- - ps: dnvm upgrade
+ - dnvm upgrade
 #- ps: dnvm update-self
 #- ps: dnvm list
 #- ps: dnvm use 1.0.0-beta7
- - ps: npm cache clean
+ - npm cache clean
 # - ps: npm install gulp bower
- - ps: npm install -g gulp bower
- - ps: dnu restore
+ - npm install -g gulp bower
+ - dnu restore
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
- - ps: dnu build ./src
- - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
+ - dnu build ./src
+ - dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
 #test_script:
