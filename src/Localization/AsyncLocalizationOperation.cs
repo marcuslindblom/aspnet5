@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Raven.Client;
@@ -10,7 +12,6 @@ namespace src.Localization
     {
         private readonly IAsyncDocumentSession _session;
         private readonly CultureInfo _locale;
-        private readonly CultureInfo _fallbackLocale;
 
         public string Key { get; set; }
 
@@ -18,11 +19,10 @@ namespace src.Localization
 
         public Page Page { get; set; }
 
-        public AsyncLocalizationOperation(IAsyncDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale)
+        public AsyncLocalizationOperation(IAsyncDocumentSession session, CultureInfo locale)
         {
             _session = session;
             _locale = locale;
-            _fallbackLocale = fallbackLocale;
         }
 
         public Task<T> LoadAsync<T>(string id, CancellationToken token = default(CancellationToken))
@@ -31,7 +31,15 @@ namespace src.Localization
                 configuration =>
                 {
                     configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
-                    configuration.AddTransformerParameter("FallbackLocale", _fallbackLocale?.TwoLetterISOLanguageName);
+                }, token);
+        }
+
+        public Task<T[]> LoadAsync<T>(IEnumerable<string> ids, CancellationToken token = default(CancellationToken))
+        {
+            return _session.LoadAsync<LocalizationTransformer, T>(ids,
+                configuration =>
+                {
+                    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
                 }, token);
         }
 
@@ -41,9 +49,13 @@ namespace src.Localization
 
             var page = Page ?? new Page();
 
+            //page.Acl = localizedPage.Acl;
+
+            localizedPage.Acl = null;
+
             _session.StoreAsync(page, token).Wait(token);
 
-            Task<Site> siteTask     = _session.LoadAsync<Site>("sites/" + _locale.TwoLetterISOLanguageName, token);
+            Task<Site> siteTask = _session.LoadAsync<Site>("sites/" + _locale.TwoLetterISOLanguageName, token);
 
             return Task.WhenAll(siteTask).ContinueWith(task =>
             {
@@ -51,10 +63,20 @@ namespace src.Localization
                 {
                     var trie = siteTask.Result.Trie;
 
-                    if (!trie.ContainsKey(Key))
+                    // Update an existing item
+                    if (trie.Any(x => x.Value.PageId == page.Id))
                     {
-                        trie.Add(Key, new TrieNode(page.Id, localizedPage.Name, Entity.GetType().Name));
+                        var nodeToRemove = trie.SingleOrDefault(x => x.Value.PageId == page.Id);
+                        trie.Remove(nodeToRemove.Key);
+                        trie.Add(Key, new TrieNode(page.Id, nodeToRemove.Value.ControllerName));
                     }
+
+                    // Don't add the same key
+                    else if (!trie.ContainsKey(Key))
+                    {
+                        trie.Add(Key, new TrieNode(page.Id, Entity.GetType().Name));
+                    }
+
                 }
 
                 _session.StoreAsync(localizedPage, string.Join("/", page.Id, _locale.TwoLetterISOLanguageName), token);

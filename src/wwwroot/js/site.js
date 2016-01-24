@@ -1,3 +1,20 @@
+Box.Application.addBehavior('behavior-name', function (context) {
+
+    return {
+
+        onclick: function (event, element, elementType) {
+            console.log('behavior');
+        },
+
+        onmouseenter: function (event, element, elementType) {
+            console.log('mouse in');
+        },
+
+
+    };
+
+});
+
 Box.Application.addModule('widget', function (context) {
 
     'use strict';
@@ -6,6 +23,9 @@ Box.Application.addModule('widget', function (context) {
         moduleEl;
 
     return {
+
+        //behaviors: ['behavior-name'],
+
         /**
         * Initializes the module and caches the module element
         * @returns {void}
@@ -14,12 +34,12 @@ Box.Application.addModule('widget', function (context) {
             console.log('init');
             moduleEl = context.getElement();
 
-            var config = context.getConfig(),
-                url = config.root,
-                itemsPerPage = config.itemsPerPage;
+            //var config = context.getConfig(),
+            //    url = config.root,
+            //    itemsPerPage = config.itemsPerPage;
 
-            console.log(itemsPerPage);
-            console.log(url);
+            //console.log(itemsPerPage);
+            //console.log(url);
         },
 
         /**
@@ -46,6 +66,7 @@ Box.Application.addModule('widget', function (context) {
         loadEditor: function () {
 
             moduleEl.innerText = 'hej knekt';
+            context.broadcast('some-message');
             console.log('loading editor...');
 
         },
@@ -56,7 +77,7 @@ Box.Application.addModule('widget', function (context) {
 
         },
 
-        focusin: function () {
+        onfocusin: function () {
             console.log('blur');
         },
 
@@ -75,6 +96,9 @@ Box.Application.addModule('editor', function (context) {
         moduleEl;
 
     return {
+
+        //behaviors: ['behavior-name'],
+
         /**
         * Initializes the module and caches the module element
         * @returns {void}
@@ -126,13 +150,30 @@ Box.Application.addModule('editor', function (context) {
 
         },
 
+        onmouseenter: function (event, element, elementType) {
+            this.openEditor();
+        },
+
+        onmouseleave: function (event, element, elementType) {
+            this.closeEditor();
+        },
+
+        openEditor: function() {
+            var aside = root.querySelector('aside');
+            aside.setAttribute('class', 'expanded');
+        },
+
+        closeEditor: function () {
+            var aside = root.querySelector('aside');
+            aside.removeAttribute('class', 'expanded');
+        },
+
         togglePanel : function() {
 
             var aside = root.querySelector('aside');
 
             aside.setAttribute('class', 'expanded');
             //aside.classList.toggle('expanded');
-
         }
     };
 
@@ -140,16 +181,16 @@ Box.Application.addModule('editor', function (context) {
 
 
 
-var hosts = document.querySelectorAll('[id^=_]');
+//var hosts = document.querySelectorAll('[id^=_]');
 
-var template = document.querySelector('.widget-template');
+//var template = document.querySelector('.widget-template');
 
-[].forEach.call(hosts, function (host) {
-    var root = host.createShadowRoot();
-    root.appendChild(document.importNode(template.content, true));
-    Box.Application.startAll(root);
-});
+//[].forEach.call(hosts, function (host) {
+//    var root = host.createShadowRoot();
+//    root.appendChild(document.importNode(template.content, true));
+//    Box.Application.startAll(root);
+//});
 
 
-// Fire up the application
-Box.Application.init();
+//// Fire up the application
+//Box.Application.init();

@@ -4,7 +4,6 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Rendering;
 using Microsoft.AspNet.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using src.Models;
 using Microsoft.AspNet.Mvc.ViewFeatures;
 using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
 
@@ -51,24 +50,21 @@ namespace src.TagHelpers
             var content = await output.GetChildContentAsync();
 
             output.PreContent.SetHtmlContent(
-                "<script type=\"text/x-config\">{\"itemsPerPage\":10,\"root\":\"/home\"}</script>");
+                "<script type=\"text/x-config\">{ \"name\": \"" + Module + "\", \"type\": \"" + _bricsContext.CurrentNode.PageId +"\" }</script>");
 
             //if (!content.IsEmpty && !content.IsWhiteSpace)
             //{
             //    return;
             //}
 
-            output.Attributes["id"] = "_" + context.UniqueId;
+            //output.Attributes["id"] = "_" + context.UniqueId;
             output.Attributes["data-module"] = "widget";
 
             //var form = _htmlHelper.Editor(Module);
 
             //var tagHelperContent = output.Content.SetContent(form);
 
-            //output.PreContent.SetHtmlContent(
-            //    @"<script type='text/x-config'>{ 'itemsPerPage':10,'root':'/home'}</script>");
-
-            await _htmlHelper.RenderPartialAsync("~/Views/ComponentTagHelper/_Template.cshtml", _htmlHelper.ViewData.Model);
+            //await _htmlHelper.RenderPartialAsync("~/Views/ComponentTagHelper/_Template.cshtml", _htmlHelper.ViewData.Model);
 
             //output.PostContent.SetHtmlContent(template.ToString());
 

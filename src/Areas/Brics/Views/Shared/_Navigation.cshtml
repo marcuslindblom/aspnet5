@@ -1,0 +1,18 @@
+﻿@model src.Page[]
+
+<ul data-type="nav">
+    @foreach (var page in Model)
+    {
+        <li>
+            <a href="@("/brics/editor" + Url.Action("index", new { page }) )">@page.Name</a>
+        </li>
+    }
+
+    @*<li>
+        <a href="/brics/editor/" data-id="1">Hem</a>
+    </li>
+    <li>
+        <a href="/brics/editor/om-oss" data-id="2">Om oss?</a>
+    </li>*@
+
+</ul>

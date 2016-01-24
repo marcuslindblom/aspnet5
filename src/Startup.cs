@@ -52,6 +52,8 @@ namespace src
 
             app.UseIISPlatformHandler();
 
+            app.UseStatusCodePages();
+
             app.UseStaticFiles();
 
             // Add localization to the request pipeline.

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using src.Mvc;
 
 namespace src
 {
@@ -8,14 +9,18 @@ namespace src
     /// </summary>
     public sealed class Page
     {
-        //[ScaffoldColumn(false)]
+        [ScaffoldColumn(false)]
         public string Id { get; set; }
 
         public DateTime? Changed { get; set; }
 
+        public DateTime? PublishedDate { get; set; } 
+
         public Metadata Metadata { get; set; }
 
         public string Name { get; set; } // < Maybe a bad idea because of the navigtion
+
+        public AccessControl? Acl { get; set; } // < This could be stored as meta data on the document instead
 
         public Page()
         {

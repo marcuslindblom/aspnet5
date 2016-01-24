@@ -1,0 +1,81 @@
+﻿@model src.Areas.Brics.Models.SettingsViewModel
+
+<div class="settings-view-header">
+
+    <form method="post" id="page-form">
+
+        <h4>Settings</h4>
+
+        <button data-type="btn-close">Close</button>
+
+        <div>
+            <input type="hidden" name="CurrentPage.Id" value="@Model.CurrentPage.Id" />
+            <div>                
+                <label id="label1" for="name">Name</label>
+            </div>
+            <div>
+                <input type="text" id="name" name="CurrentPage.Name" value="@Model.CurrentPage.Name" data-module="settings-name" aria-labelledby="label1 error1"/>
+            </div>
+            <label id="error1" for="name"></label>
+        </div>
+        <br/>
+        <div data-module="settings-url">
+            <div>
+                <label for="url">URL</label> <a href="#">Preview</a>
+            </div>
+            <div>
+                <input type="text" id="url" value="@Model.Slug" data-type="input-slug"/>
+            </div>
+            <input type="hidden" name="Url" value="@(Model.Url + "/" + Model.Slug)" />
+            <small>www.brickpile.io<span>@(Model.Url + "/")<span>@Model.Slug</span></span></small>
+        </div>
+        <br />
+        <div data-module="settings-date">
+            <div>
+                <label id="label2" for="date">Publish Date</label>
+            </div>
+            <div>
+                <input type="datetime" id="date" value="@Model.PublishedDate" aria-labelledby="label2 error2" data-type="input-date"/>
+                <input type="hidden" name="CurrentPage.PublishedDate" id="date2"/>
+            </div>
+            <label id="error2" for="date"></label>
+        </div>
+        <br />
+        <div>
+            <div>
+                <label>Tags</label>
+            </div>
+            <div>
+                <input type="text" name="tags"/>
+            </div>
+        </div>
+        <br />
+        <div>
+            <div>
+                <label>Author</label>
+            </div>
+            <div>
+                <select>
+                    <option>Marcus Lindblom</option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <div>
+            <div>
+                <label>Access Control</label>
+            </div>
+            <div>
+                @Html.DropDownList("CurrentPage.Acl", Model.Acl)
+            </div>
+        </div>
+        <br />
+        <div>
+            <a href="#" style="border: solid 1px #dfe1e3; padding: 1em; display: block">
+                Meta Data<br />
+                <small>Extra content for SEO and social media.</small>
+            </a>
+        </div>
+        <small>Use <a href="https://buffer.com/pablo">Pablo</a></small>
+    </form>
+</div>

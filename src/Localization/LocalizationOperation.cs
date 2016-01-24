@@ -7,13 +7,11 @@ namespace src.Localization
     {
         private readonly IDocumentSession _session;
         private readonly CultureInfo _locale;
-        private readonly CultureInfo _fallbackLocale;
 
-        public LocalizationOperation(IDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale)
+        public LocalizationOperation(IDocumentSession session, CultureInfo locale)
         {
             _session = session;
             _locale = locale;
-            _fallbackLocale = fallbackLocale;
         }
 
         public string Key { get; set; }
@@ -25,7 +23,6 @@ namespace src.Localization
                 configuration =>
                 {
                     configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
-                    configuration.AddTransformerParameter("FallbackLocale", _fallbackLocale?.TwoLetterISOLanguageName);
                 });
         }
     }

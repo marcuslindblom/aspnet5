@@ -1,16 +1,34 @@
-﻿using Microsoft.AspNet.Authorization;
+﻿using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Mvc;
+using Raven.Client;
+using src.Localization;
+using src.Routing.Trie;
 
-namespace brics.Areas.Brics.Controllers
+namespace src.Areas.Brics.Controllers
 {
     [Area("brics")]
+    //[Route("[area]/{id?}")]
     //[Authorize]
     public class DashboardController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult Index()
+        private readonly IDocumentStore _store;
+
+        public DashboardController(IDocumentStore store)
         {
-            return View();
+            _store = store;
+        }
+
+        // GET: /<controller>/
+        public async Task<IActionResult> Index(int id)
+        {
+            using (var session = _store.OpenAsyncSession())
+            {
+                var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>("pages/" + id);
+                return View(page);
+            }
         }
     }
 }

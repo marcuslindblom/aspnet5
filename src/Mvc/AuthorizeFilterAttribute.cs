@@ -1,10 +1,8 @@
 ﻿using System;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Mvc.Filters;
-using Raven.Abstractions.Data;
-using Raven.Client;
+using Microsoft.Extensions.DependencyInjection;
 using src.Routing;
-using src.Routing.Trie;
 
 namespace src.Mvc
 {
@@ -13,33 +11,25 @@ namespace src.Mvc
     {
         public override void OnAuthorization(AuthorizationContext context)
         {
-            if(!HasAllowAnonymous(context)) {                
+            if(!HasAllowAnonymous(context)) {
                 object value;
                 if(context.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
                 {
-                    IDocumentStore documentStore = context.HttpContext.RequestServices.GetService(typeof(IDocumentStore)) as IDocumentStore;
-                    if (documentStore == null) return;
-                    var node = value as TrieNode;
 
-                    if(node == null) return;
-                    
-                    JsonDocumentMetadata documentMetadata = documentStore.DatabaseCommands.Head(node.PageId);
-                    if (documentMetadata == null) return;
-                    var accessControl = documentMetadata.Metadata.Value<string>("Brics-AccessControl");
+                    var accessor = context.HttpContext.RequestServices.GetService<IBricsContextAccessor>();
+                    var currentPage = accessor.CurrentPage;
 
-                    if (string.IsNullOrEmpty(accessControl))
-                    {
-                        context.Result = new HttpNotFoundResult();
-                    }
-                    if (accessControl == AccessControl.Anonymous)
+                    if (currentPage?.Acl == null || currentPage.Acl == AccessControl.Anonymous)
                     {
                         return;
                     }
-                    if (accessControl == AccessControl.Authenticated && !context.HttpContext.User.Identity.IsAuthenticated)
+
+                    if (currentPage.Acl == AccessControl.Authenticated && !context.HttpContext.User.Identity.IsAuthenticated)
                     {
                         context.Result = new HttpNotFoundResult();
                     }
-                    if (accessControl == AccessControl.Administrators && !context.HttpContext.User.IsInRole(accessControl))
+
+                    if (currentPage.Acl == AccessControl.Administrators && !context.HttpContext.User.IsInRole(Enum.GetName(typeof(AccessControl), currentPage.Acl)))
                     {
                         context.Result = new HttpNotFoundResult();
                     }
@@ -48,9 +38,9 @@ namespace src.Mvc
         }
     }
 
-    public struct AccessControl {
-        public const string Administrators = "Administrators";
-        public const string Anonymous = "Anonymous";
-        public const string Authenticated = "Authenticated";
+    public enum AccessControl {
+        Anonymous = 0,
+        Authenticated = 1,
+        Administrators = 2
     }
 }

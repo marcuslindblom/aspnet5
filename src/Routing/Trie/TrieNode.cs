@@ -4,15 +4,11 @@ namespace src.Routing.Trie
 {
     public class TrieNode
     {
-        public TrieNode(string pageId, string name, string controllerName)
+        public TrieNode(string pageId, string controllerName)
         {
             if (string.IsNullOrEmpty(pageId))
             {
                 throw new ArgumentNullException(nameof(pageId));
-            }
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new ArgumentNullException(nameof(name));
             }
 
             if (string.IsNullOrEmpty(controllerName))
@@ -20,11 +16,8 @@ namespace src.Routing.Trie
                 throw new ArgumentNullException(nameof(controllerName));
             }
             PageId = pageId;
-            Name = name;
             ControllerName = controllerName;
         }
-
-        public string Name { get; set; }
 
         public string PageId { get; set; }
 

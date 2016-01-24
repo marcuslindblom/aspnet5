@@ -1,28 +1,30 @@
 ﻿using System.Globalization;
 using Raven.Client;
+using src.Mvc;
+using src.Security;
 
 namespace src.Localization
 {
     public static class DocumentSessionExtensions
     {
-        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale = null)
+        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, CultureInfo locale)
         {
-            return new LocalizationOperation(session, locale, fallbackLocale);
+            return new LocalizationOperation(session, locale);
         }
 
-        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, Page page, CultureInfo locale, CultureInfo fallbackLocale = null)
+        public static ILocalizationOperation LocalizeFor(this IDocumentSession session, Page page, CultureInfo locale)
         {
-            return new LocalizationOperation(session, locale, fallbackLocale) { Page = page };
+            return new LocalizationOperation(session, locale) { Page = page };
         }
 
-        public static IAsyncLocalizationOperation LocalizeFor(this IAsyncDocumentSession session, CultureInfo locale, CultureInfo fallbackLocale = null)
+        public static IAsyncLocalizationOperation LocalizeFor(this IAsyncDocumentSession session, CultureInfo locale)
         {
-            return new AsyncLocalizationOperation(session, locale, fallbackLocale);
+            return new AsyncLocalizationOperation(session, locale);
         }
 
-        public static IAsyncLocalizationOperation LocalizeFor(this IAsyncDocumentSession session, Page page, CultureInfo locale, CultureInfo fallbackLocale = null)
+        public static IAsyncLocalizationOperation LocalizeFor(this IAsyncDocumentSession session, Page page, CultureInfo locale)
         {
-            return new AsyncLocalizationOperation(session, locale, fallbackLocale) { Page = page };
+            return new AsyncLocalizationOperation(session, locale) { Page = page };
         }
 
         public static IAsyncLocalizationOperation ForUrl(this IAsyncLocalizationOperation session, string key)
@@ -35,6 +37,11 @@ namespace src.Localization
         {
             session.Entity = entity;
             return session;
+        }
+
+        public static IAsyncAclOperation WithAcl(this IAsyncDocumentSession session, AccessControl acl = AccessControl.Anonymous)
+        {
+            return new AsyncAclOperation(session, acl);
         }
     }
 }

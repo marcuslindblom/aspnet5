@@ -17,9 +17,9 @@ namespace src.Controllers
             _documentStore = documentStore;
         }
 
-        public IActionResult Index(Home home, Page currentPage)
+        public IActionResult Index()
         {
-            return View(currentPage);
+            return View();
         }
 
         public IActionResult Contact()
@@ -32,25 +32,6 @@ namespace src.Controllers
         public IActionResult Error()
         {
             return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Save([FromForm]Page page)
-        {
-            if (ModelState.IsValid)
-            {
-                using (var session = _documentStore.OpenAsyncSession())
-                {
-                    var p = await session.LocalizeFor(new CultureInfo("sv")).LoadAsync<Page>(page.Id);
-                    
-                    if (await TryUpdateModelAsync(p))
-                    {
-                        await session.LocalizeFor(p, new CultureInfo("sv")).StoreAsync(p);
-                        await session.SaveChangesAsync();
-                    }
-                }
-            }
-            return RedirectToAction("Index");
         }
     }
 }

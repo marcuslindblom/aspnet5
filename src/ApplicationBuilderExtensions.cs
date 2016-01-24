@@ -81,7 +81,7 @@ namespace src
 
                 routes.MapRoute(
                     name: "AreasRoute",
-                    template: "{area}/{controller=Dashboard}/{action=index}");
+                    template: "{area}/{controller=Dashboard}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     name: "default",
@@ -119,13 +119,13 @@ namespace src
                     .LocalizeFor(new CultureInfo("en"))
                     .ForModel(new Home { Heading = "In english" })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Home" });
+                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now });
 
                 await session
                     .LocalizeFor(new CultureInfo("en"))
                     .ForModel(new About { Heading = "ASP.NET 5 ? RavenDB" })
                     .ForUrl("/about")
-                    .StoreAsync(new Page { Name = "About" });
+                    .StoreAsync(new Page { Name = "About" } );
 
                 await session.SaveChangesAsync();
             }
@@ -139,7 +139,7 @@ namespace src
                     .LocalizeFor(home, new CultureInfo("sv"))
                     .ForModel(new Home { Heading = "På svenska" })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Hem" });
+                    .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now });
 
                 var about = await session.LoadAsync<Page>("pages/2");
 
@@ -148,6 +148,12 @@ namespace src
                     .ForModel(new About { Heading = "Om oss" } )
                     .ForUrl("/om-oss")
                     .StoreAsync(new Page { Name = "Om oss" });
+
+                await session
+                    .LocalizeFor(new CultureInfo("sv"))
+                    .ForModel(new About {Heading = "En sida till"})
+                    .ForUrl("/om-oss/en-sida-till")
+                    .StoreAsync(new Page {Name = "En sida till"});
 
                 await session.SaveChangesAsync();
             }

@@ -184,9 +184,9 @@ namespace Tests.Routing
         {
             var trie = new Trie
                 {
-                    {"/", new TrieNode("homes/1", "Home", "Home")},
-                    {"/about", new TrieNode("homes/1", "About", "Home")},
-                    {"/article", new TrieNode("articles/1", "Article", "Article")}
+                    {"/", new TrieNode("homes/1", "Home")},
+                    {"/about", new TrieNode("homes/1", "Home")},
+                    {"/article", new TrieNode("articles/1", "Article")}
                 };
             return trie;
         }

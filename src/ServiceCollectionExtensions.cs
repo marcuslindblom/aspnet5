@@ -69,7 +69,8 @@ namespace src
             services.Configure<MvcOptions>(options =>
             {
                 options.ModelBinders.Insert(0,new DefaultModelBinder(DocumentStore));
-                options.Filters.Add(typeof (AuthorizeFilterAttribute), 1);
+                //options.Filters.Add(typeof(PublishedFilterAttribute), 1);
+                options.Filters.Add(typeof (AuthorizeFilterAttribute), 2);                
             });
 
             services.AddInstance(DocumentStore);

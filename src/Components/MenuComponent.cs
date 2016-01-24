@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Features;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Mvc;
+using Raven.Client;
+using src.Localization;
 using src.Routing.Trie;
 
 namespace src.Components
@@ -12,11 +15,13 @@ namespace src.Components
     {
         private readonly IRouteResolverTrie _routeResolverTrie;
         private readonly IHttpContextAccessor _httpAccessor;
+        private readonly IDocumentStore _documentStore;
 
-        public MenuComponent(IRouteResolverTrie routeResolverTrie, IHttpContextAccessor httpAccessor)
+        public MenuComponent(IRouteResolverTrie routeResolverTrie, IHttpContextAccessor httpAccessor, IDocumentStore documentStore)
         {
             _routeResolverTrie = routeResolverTrie;
             _httpAccessor = httpAccessor;
+            _documentStore = documentStore;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -24,7 +29,14 @@ namespace src.Components
             var requestCultureFeature = _httpAccessor.HttpContext.Features.Get<IRequestCultureFeature>();
             var trie = await _routeResolverTrie.LoadTrieAsync(requestCultureFeature.RequestCulture);
 
-            return View(trie.ChildrenOf("/", true));
+            using (var session = _documentStore.OpenAsyncSession())
+            {
+                var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
+                var pages = await session.LocalizeFor(requestCultureFeature.RequestCulture.Culture).LoadAsync<Page>(ids);
+                return View(pages);
+            }
+
+            //return View(trie.ChildrenOf("/", true));
         }
     }
 }

@@ -40,7 +40,7 @@ namespace src
                         using (var session = _documentStore.OpenSession())
                         {
                             _currentPage = session.LocalizeFor(CurrentRequestCulture.Culture).Load<Page>(CurrentNode.PageId);
-                        }                                                                     
+                        }
                     }                    
                 }
                 return _currentPage;
