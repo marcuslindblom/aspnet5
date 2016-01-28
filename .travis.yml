@@ -7,7 +7,7 @@ install:
   - dnu restore
 script:
   - dnu build src
-  - dnx -p test test
+#  - dnx -p test test
 #deploy:
 #  provider: azure_web_apps
 #  on:
