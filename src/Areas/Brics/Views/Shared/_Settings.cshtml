@@ -2,11 +2,11 @@
 
 <div class="settings-view-header">
 
-    <form method="post" id="page-form">
+    <h4>Settings</h4>
 
-        <h4>Settings</h4>
+    <button data-type="btn-toggle">[</button> <button data-type="btn-close">Close</button>
 
-        <button data-type="btn-close">Close</button>
+    <form method="post" action="/api/settings" id="page-form" style="margin-top: 20px;">        
 
         <div>
             <input type="hidden" name="CurrentPage.Id" value="@Model.CurrentPage.Id" />
@@ -71,7 +71,7 @@
         </div>
         <br />
         <div>
-            <a href="#" style="border: solid 1px #dfe1e3; padding: 1em; display: block">
+            <a href="#" style="border: solid 1px #474747; padding: 1em; display: block">
                 Meta Data<br />
                 <small>Extra content for SEO and social media.</small>
             </a>

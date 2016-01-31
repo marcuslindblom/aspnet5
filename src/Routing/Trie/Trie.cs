@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace src.Routing.Trie
 {
@@ -144,7 +145,16 @@ namespace src.Routing.Trie
 
         public IEnumerable<KeyValuePair<string, TrieNode>> ChildrenOf(string key, bool includeRoot = false)
         {
-            return includeRoot ? nodes.Where(x => x.Key.StartsWith(key)) : nodes.Where(x => x.Key != key && x.Key.StartsWith(key));
+            var matches = nodes.Keys.Select(x => Regex.Match(x, "^/([^/]*)[^/]"));
+            foreach (var match in matches)
+            {
+                if (match.Success)
+                {
+                    return nodes.Where(x => x.Key == match.Value);
+                }    
+            }
+            return null;
+            //return includeRoot ? nodes.Where(x => x.Key.StartsWith(key)) : nodes.Where(x => x.Key != key && x.Key.StartsWith(key));
         }
 
         public IEnumerable<KeyValuePair<string, TrieNode>> AncestorsOf(string key)
