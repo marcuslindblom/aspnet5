@@ -34,7 +34,7 @@ gulp.task("min:js", function() {
       base: "."
     })
     .pipe(concat(paths.concatJsDest))
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(gulp.dest("."));
 });
 
