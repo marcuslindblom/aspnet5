@@ -52,13 +52,17 @@ namespace src.TagHelpers
             output.PreContent.SetHtmlContent(
                 "<script type=\"text/x-config\">{ \"name\": \"" + Module + "\", \"type\": \"" + _bricsContext.CurrentNode.PageId +"\" }</script>");
 
-            //if (!content.IsEmpty && !content.IsWhiteSpace)
-            //{
-            //    return;
-            //}
+            if (content.IsEmpty && content.IsWhiteSpace)
+            {
+                output.Attributes.Add("class", "empty");
+                output.Content.SetContent("+ Add content for " + Module);
+                //content.SetContent();
+                //return;
+            }
 
             //output.Attributes["id"] = "_" + context.UniqueId;
             output.Attributes["data-module"] = "widget";
+            output.Attributes["tabindex"] = "-1";
 
             //var form = _htmlHelper.Editor(Module);
 

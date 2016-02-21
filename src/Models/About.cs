@@ -16,6 +16,8 @@ namespace src.Models
         public string Message { get; set; }
 
         public Link Link { get; set; }
+
+        public string Test { get; set; }
     }
 
     public class Link

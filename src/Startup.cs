@@ -8,6 +8,7 @@ using Microsoft.AspNet.Localization;
 using System.Globalization;
 using src;
 using src.Models;
+using Microsoft.AspNet.FileProviders;
 
 namespace src
 {
@@ -44,6 +45,8 @@ namespace src
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseStatusCodePagesWithRedirects("~/{0}.html");
+                //app.UseStatusCodePagesWithReExecute("/{0}.html");
             }
             else
             {
@@ -52,7 +55,7 @@ namespace src
 
             app.UseIISPlatformHandler();
 
-            app.UseStatusCodePages();
+            //app.UseStatusCodePages();
 
             app.UseStaticFiles();
 

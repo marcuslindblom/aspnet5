@@ -275,6 +275,7 @@
     </div>
 
     <environment names="Development">
+        <script src="~/js/app.min.js" asp-append-version="true"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/t3js/dist/t3.js"></script>
         <script src="~/lib/speakingurl/lib/speakingurl.js"></script>
@@ -318,15 +319,84 @@
 <template class="widget-template">
     <style>
         :host {
-            cursor: pointer;
-            outline: dashed 1px #ddd;
-            min-height:25px;
+            /*cursor: pointer;*/
+            /*outline: dashed 1px #ddd;*/
+            transition: all .2s ease-in-out;
+            outline:none;
+            position:relative;
         }
-        :host(:hover) {
-            transition: outline-color .3s ease-in;
-            outline: dashed 1px #00bfff;
+        :host(:hover),
+        :host(:focus) {
+            /*background-color:#f9f9f9;*/
+            /*transition: outline-color .3s ease-in;*/
+            /*outline: dashed 1px #00bfff;*/
+            box-shadow:
+                0px 0px 0px 1px #fff,
+                0px 0px 0px 2px #49a7e6,
+                0px -1px 9px 1px rgba(119, 119, 119, 0.4);
         }
+        :host(:hover) span,
+        :host(:focus) span {
+            display:inline-block;
+            bottom:-8px;
+        }
+        :host(.empty) {
+            color: #767676;
+            text-align: center;
+        }
+        :host(:focus) {
+            /*background-color: #f9f9f9;*/
+            /*background-color:#dedede;*/
+            /*transform: scale(1.05);*/
+            /*top: 0px;
+            left: 0px;
+            border-width: 2px 0px 0px 2px;*/
+        }
+        :host span {
+            display: none;
+            position: absolute;
+            bottom: -20px;
+            right: -18px;
+            border: 1px solid #49a7e6;
+            /*border-radius: 4px;*/
+            overflow: hidden;
+            -webkit-transition: border 50ms ease-in 0s;
+            -moz-transition: border 50ms ease-in 0s;
+            transition: border 50ms ease-in 0s;
+            z-index: 97;
+        }
+        :host span a {
+            width: 37px;
+            text-align: center;
+            line-height: 14px;
+            padding: 6px 0 4px;
+            color: #555459;
+            background: #fff;
+            /*border-right: 1px solid rgba(0,0,0,.15);*/
+            -webkit-transition: all 50ms ease-in 0s;
+            -moz-transition: all 50ms ease-in 0s;
+            transition: all 50ms ease-in 0s;
+            display: block;
+            float: left;
+            font-size:14px;
+        }
+        /*:host::after,
+        :host::before {
+            content: "";
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            border: 2px solid #D94F5C;
+            transition-property: transform, opacity;
+            transition-duration: 0.3s, 0.3s;
+            transition-delay: 0s, 0s;
+            transition-timing-function: cubic-bezier(0.17, 0.67, 0.05, 1.29);
+        }*/
     </style>
+    <span>
+        <a href="#">Edit</a>
+    </span>
     <content />
 </template>
 
