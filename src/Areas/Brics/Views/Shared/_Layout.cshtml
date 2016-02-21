@@ -8,6 +8,7 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     @*<link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900' rel='stylesheet' type='text/css'>*@
     @*<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>*@
+    <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     <style type="text/css">
         body {
             font-family: 'Montserrat', sans-serif;
@@ -274,7 +275,7 @@
         @RenderBody()
     </div>
 
-    <environment names="Development">
+    @*<environment names="Development">
         <script src="~/js/app.min.js" asp-append-version="true"></script>
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/t3js/dist/t3.js"></script>
@@ -308,13 +309,15 @@
         </script>
 
         <script src="~/js/app.min.js" asp-append-version="true"></script>
-    </environment>
+    </environment>*@
 
-    <script>
+    <script src="~/js/app.js" asp-append-version="true"></script>
+
+    @*<script>
         Application.init({
             debug: true
         });
-    </script>
+    </script>*@
 
 <template class="widget-template">
     <style>

@@ -1,52 +1,69 @@
 /// <binding Clean='clean' ProjectOpened='default' />
 "use strict";
 
-var gulp = require("gulp"),
-  rimraf = require("rimraf"),
-  concat = require("gulp-concat"),
-  cssmin = require("gulp-cssmin"),
-  uglify = require("gulp-uglify"),
-  project = require("./project.json");
+var gulp = require('gulp'),
+    sass = require('gulp-sass'),
+    cssmin = require("gulp-cssmin"),
+    browserify = require('browserify'),
+    babelify = require('babelify'),
+    source = require('vinyl-source-stream'),
+    uglify = require("gulp-uglify"),
+    buffer = require('vinyl-buffer'),
+    rimraf = require('rimraf'),
+    argv = require('yargs').argv,
+    gulpif = require('gulp-if');
+
+
+var webroot = "./wwwroot";
 
 var paths = {
-  webroot: "./wwwroot/"
+    js: {
+        entry: "./Content/Scripts/app.js",
+        watch: "./Content/Scripts/**/*.js",
+        output: webroot + "/js",
+    },
+    scss: {
+        entry: "./Content/Scss/app.scss",
+        watch: "./Content/Scss/**/*.scss",
+        output: webroot + "/css"
+    }
 };
 
-paths.js = paths.webroot + "js/**/*.js";
-paths.minJs = paths.webroot + "js/**/*.min.js";
-paths.css = paths.webroot + "css/**/*.css";
-paths.minCss = paths.webroot + "css/**/*.min.css";
-paths.concatJsDest = paths.webroot + "js/app.min.js";
-paths.concatCssDest = paths.webroot + "css/site.min.css";
-
-gulp.task("clean:js", function(cb) {
-  rimraf(paths.concatJsDest, cb);
+gulp.task("clean:js", function (cb) {
+    rimraf(paths.js.output, cb);
 });
 
-gulp.task("clean:css", function(cb) {
-  rimraf(paths.concatCssDest, cb);
+gulp.task("clean:scss", function (cb) {
+    rimraf(paths.scss.output, cb);
 });
 
-gulp.task("clean", ["clean:js", "clean:css"]);
+gulp.task("clean", ["clean:js", "clean:scss"]);
 
-gulp.task("min:js", function() {
-  gulp.src([paths.js, "!" + paths.minJs], {
-      base: "."
+gulp.task('min:js', function () {
+    return browserify({
+        entries: paths.js.entry,
+        debug: true
     })
-    .pipe(concat(paths.concatJsDest))
-    //.pipe(uglify())
-    .pipe(gulp.dest("."));
+    .transform(babelify, { presets: ["es2015"] })
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(buffer())
+    .pipe(gulpif(argv.dist, uglify()))
+    .pipe(gulp.dest(paths.js.output));
 });
 
-gulp.task("min:css", function() {
-  gulp.src([paths.css, "!" + paths.minCss])
-    .pipe(concat(paths.concatCssDest))
-    .pipe(cssmin())
-    .pipe(gulp.dest("."));
+gulp.task('min:scss', function () {
+    return gulp.src(paths.scss.entry)
+        .pipe(sass({
+            errLogToConsole: true
+        }))
+        .pipe(gulpif(argv.dist, cssmin()))
+        .pipe(gulp.dest(paths.scss.output));
 });
 
-gulp.task("min", ["min:js", "min:css"]);
-
-gulp.task('default', function () {
-    gulp.watch(paths.css, ['min']);
+gulp.task('watch', ['default'], function () {
+    gulp.watch(paths.js.watch, ['min:js']);
+    gulp.watch(paths.scss.watch, ['min:scss']);
 });
+
+gulp.task('default', ['min:js', 'min:scss']);
