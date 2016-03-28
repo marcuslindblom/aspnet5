@@ -1,0 +1,11 @@
+{
+  "AppSettings": {
+    "SiteTitle": "WebApplicationBasic"
+  },
+  "Data": {
+    "DefaultConnection": {
+      "Connectionstring": "http://localhost:8080"
+    },
+    "DefaultDatabase": "brickpile"
+  }
+}

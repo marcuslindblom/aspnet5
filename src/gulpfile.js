@@ -1,4 +1,4 @@
-/// <binding Clean='clean' />
+/// <binding Clean='clean' ProjectOpened='default' />
 "use strict";
 
 var gulp = require("gulp"),
@@ -16,7 +16,7 @@ paths.js = paths.webroot + "js/**/*.js";
 paths.minJs = paths.webroot + "js/**/*.min.js";
 paths.css = paths.webroot + "css/**/*.css";
 paths.minCss = paths.webroot + "css/**/*.min.css";
-paths.concatJsDest = paths.webroot + "js/site.min.js";
+paths.concatJsDest = paths.webroot + "js/app.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 
 gulp.task("clean:js", function(cb) {
@@ -34,7 +34,7 @@ gulp.task("min:js", function() {
       base: "."
     })
     .pipe(concat(paths.concatJsDest))
-    .pipe(uglify())
+    //.pipe(uglify())
     .pipe(gulp.dest("."));
 });
 
@@ -46,3 +46,7 @@ gulp.task("min:css", function() {
 });
 
 gulp.task("min", ["min:js", "min:css"]);
+
+gulp.task('default', function () {
+    gulp.watch(paths.css, ['min']);
+});

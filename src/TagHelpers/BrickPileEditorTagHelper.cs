@@ -1,0 +1,44 @@
+﻿using System;
+using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNet.Mvc.ViewFeatures;
+using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
+using Microsoft.AspNet.Razor.TagHelpers;
+using src.Models;
+
+namespace src.TagHelpers
+{
+    [HtmlTargetElement("brickpile")]
+    public class BrickPileEditorTagHelper : TagHelper
+    {
+        private readonly IHtmlHelper _htmlHelper;
+        private readonly IBricsContextAccessor _bricsContextAccessor;
+
+        public BrickPileEditorTagHelper(IHtmlHelper htmlHelper, IBricsContextAccessor bricsContextAccessor)
+        {
+            _htmlHelper = htmlHelper;
+            _bricsContextAccessor = bricsContextAccessor;
+        }
+
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
+
+        public override async void Process(TagHelperContext context, TagHelperOutput output)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (output == null)
+            {
+                throw new ArgumentNullException(nameof(output));
+            }
+
+            (_htmlHelper as ICanHasViewContext)?.Contextualize(ViewContext);
+
+            await _htmlHelper.RenderPartialAsync("~/Views/Shared/_Editor.cshtml", _bricsContextAccessor.CurrentPage);
+
+            output.SuppressOutput();
+        }
+    }
+}

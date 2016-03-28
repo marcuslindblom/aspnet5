@@ -1,0 +1,8 @@
+﻿@model About
+
+<h2 asp-module="Heading">@Html.DisplayFor(x => x.Heading)</h2>
+<h3 asp-module="Message">@Html.DisplayFor(x => x.Message)</h3>
+
+<p>Use this area to provide additional information.</p>
+
+<p>En länk mitt i texten som ska vara redigerbar <a href="@Model.Link.Url" asp-module="Link">@Model.Link.Name</a> och lite mer text</p>

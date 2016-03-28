@@ -1,67 +1,106 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using System.Threading.Tasks
+@using Microsoft.AspNet.Http.Features
+@using Microsoft.AspNet.Localization
+@{
+    var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
+    var displayName = requestCultureFeature.RequestCulture.Culture.TwoLetterISOLanguageName;
+    var languageSwitcher = requestCultureFeature.RequestCulture.Culture.Name == "en" ? "sv" : "en";
+}
+
+<!DOCTYPE html>
+<html lang="@LayoutModel.LanguageName">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - aspnet5rc</title>
+
+        <title>@LayoutModel.MetaTitle - aspnet5rc</title>
+
+        <meta name="description" content="@LayoutModel.MetaDescription" />
+
+        <link rel="canonical" href="@LayoutModel.CanonicalUrl" />
+
+        <meta property="og:site_name" content="" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="@LayoutModel.MetaTitle" />
+        <meta property="og:description" content="@LayoutModel.MetaDescription" />
+        <meta property="og:url" content="@LayoutModel.CanonicalUrl" />
+
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content="@LayoutModel.MetaTitle" />
+        <meta name="twitter:description" content="@LayoutModel.MetaDescription" />
+        <meta name="twitter:url" content="@LayoutModel.CanonicalUrl" />
 
         <environment names="Development">
             <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
             <link rel="stylesheet" href="~/css/site.css" />
+            <link href="~/lib/bootstrap-languages/languages.css" rel="stylesheet" />
         </environment>
         <environment names="Staging,Production">
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+                  asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"/>
+            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
         </environment>
     </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a asp-controller="Home" asp-action="Index" class="navbar-brand">PR deploy v3.0.8</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-controller="Home" asp-action="About">About!</a></li>
-                        <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    </ul>
-                </div>
+<body>
+    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-controller="Home" asp-action="Index" asp-route-culture="@LayoutModel.LanguageName" asp-route-id="@LayoutModel.Id" class="navbar-brand">PR deploy v3.4.0</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                @await Component.InvokeAsync("Menu")
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            <span class="lang-xs lang-lbl-full" lang="@displayName"></span> <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a asp-action="Index" asp-route-id="pages/1" asp-route-culture="@languageSwitcher">
+                                    <span class="lang-xs lang-lbl-full" lang="@languageSwitcher"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="container body-content">
-            @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; 2015 - aspnet5rc</p>
-            </footer>
-        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr/>
+        <footer>
+            <p>&copy; 2015 - aspnet5rc</p>
+        </footer>
+    </div>
 
-        <environment names="Development">
-            <script src="~/lib/jquery/dist/jquery.js"></script>
-            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-            <script src="~/js/site.js" asp-append-version="true"></script>
-        </environment>
-        <environment names="Staging,Production">
-            <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery">
-            </script>
-            <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
-            </script>
-            <script src="~/js/site.min.js" asp-append-version="true"></script>
-        </environment>
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.1.4.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        @*<script src="~/js/site.min.js" asp-append-version="true"></script>*@
+    </environment>
 
-        @RenderSection("scripts", required: false)
-    </body>
+    @*<brickpile />*@
+
+    @RenderSection("scripts", required: false)
+
+</body>
 </html>

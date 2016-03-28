@@ -8,6 +8,11 @@
     "gulp-concat": "2.5.2",
     "gulp-cssmin": "0.1.7",
     "gulp-uglify": "1.2.0",
-    "rimraf": "2.2.8"
-  }
+    "rimraf": "2.2.8",
+    "bower": "^1.7.2"
+  },
+  "scripts": {
+    "install": "bower install && gulp clean && gulp min"
+  },
+  "dependencies": {}
 }

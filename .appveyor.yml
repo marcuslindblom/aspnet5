@@ -20,18 +20,19 @@ install:
 before_build:
  - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
 #- ps: dnvm install 1.0.0-beta7
- - ps: dnvm upgrade
+ - dnvm upgrade
 #- ps: dnvm update-self
 #- ps: dnvm list
 #- ps: dnvm use 1.0.0-beta7
-#- ps: npm cache clean
- - ps: npm install -g gulp bower
- - ps: dnu restore
+ - npm cache clean
+# - ps: npm install gulp bower
+ - npm install -g gulp bower
+ - dnu restore
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
- - ps: dnu build ./src
- - ps: dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
+ - dnu build ./src
+ - dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
 #test_script:
@@ -40,18 +41,20 @@ build_script:
 artifacts:
  - path: /AppOutput
    name: AppOutput
-   
+
 deploy:
  - provider: Environment
    name: Demo
    website_name: aspnet5rc3
    on:
     appveyor_repo_tag: true
-    
+
  - provider: Environment
    name: Test
    website_name: aspnet5rc2
    remove_files: true
+#    on:
+#     APPVEYOR_PULL_REQUEST_NUMBER: /\d+/
 #   on:
 #    branch: master
 
@@ -59,6 +62,10 @@ notifications:
  - provider: Slack
    incoming_webhook: https://hooks.slack.com/services/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
    channel: general
+   on_build_success: true
+   on_build_failure: true
+   on_build_status_changed: true
+ - provider: GitHubPullRequest
    on_build_success: true
    on_build_failure: true
    on_build_status_changed: true

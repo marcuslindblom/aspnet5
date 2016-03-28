@@ -1,10 +1,10 @@
 {
-  "version": "3.0.8-*",
+  "version": "3.5.0-*",
   "compilationOptions": {
     "emitEntryPoint": true
   },
   "tooling": {
-    "defaultNamespace": "aspnet5rc"
+    "defaultNamespace": "src"
   },
 
   "dependencies": {
@@ -21,7 +21,8 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
     "Microsoft.AspNet.Localization": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Localization": "1.0.0-rc1-final"
+    "Microsoft.Extensions.Localization": "1.0.0-rc1-final",
+    "RavenDB.Client": "3.0.30024-Unstable"    
   },
 
   "commands": {
@@ -29,8 +30,7 @@
   },
 
   "frameworks": {
-    "dnx451": {},
-    "dnxcore50": {}
+    "dnx451": {}
   },
 
   "exclude": [
@@ -52,5 +52,5 @@
       "gulp clean",
       "gulp min"
     ]
-  }
+    }
 }

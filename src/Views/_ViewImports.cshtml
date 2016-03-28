@@ -1,3 +1,7 @@
-@using aspnet5rc
-@*@addTagHelper *, Microsoft.AspNet.Mvc.TagHelpers*@
+@using System.Threading.Tasks
+@using src
+@using src.Models
+@*@removeTagHelper"*, Microsoft.AspNet.Mvc.TagHelpers"*@
+@addTagHelper "*, src"
 @addTagHelper "*, Microsoft.AspNet.Mvc.TagHelpers"
+@inject LayoutModel LayoutModel

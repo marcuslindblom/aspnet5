@@ -1,5 +1,11 @@
 {
   "AppSettings": {
     "SiteTitle": "WebApplicationBasic"
+  },
+  "Data": {
+    "DefaultConnection": {
+      "Connectionstring": "http://live-test.ravendb.net/"
+    },
+    "DefaultDatabase": "brics"
   }
 }

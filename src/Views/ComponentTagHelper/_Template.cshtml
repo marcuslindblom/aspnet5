@@ -1,0 +1,67 @@
+﻿@model dynamic
+
+<template class="widget-template">
+    <style>
+        :host {
+            outline: solid 1px #00bfff;            
+        }
+    </style>
+    <content></content>
+</template>
+
+@*<template class="widget-template">
+    <style>
+        div {
+            text-align: center;
+        }
+
+        :host.button {
+            font-size: 23px;
+            font-weight: 100;
+            border: none;
+            background: transparent;
+            opacity: 0;
+            transition: opacity .25s ease-out;
+            cursor: pointer;
+            outline: none;
+            color: #999;
+        }
+
+        :host(:hover) .button {
+            opacity: 1;
+        }
+
+        .brics {
+            transition: height .10s ease-out;
+            height: 0;
+            background: #2e3332;
+            visibility: hidden;
+            position: absolute;
+            left: 0;
+            width: 100vw;
+            padding: 1.5em 0 0;
+        }
+
+        .brics li {
+            display: inline-block;
+        }
+
+        :host.open {
+            height: 120px;
+        }
+
+        :host.open.brics {
+            visibility: visible;
+            height: 70px;
+        }
+    </style>
+    <div data-module="widget">
+        <button class="button" data-type="toggle-btn">+</button>
+        <div class="brics">
+            <ul>
+                <li data-module="foo"><button data-type="btn">Enbart rubrik</button></li>
+                <li data-module="foo"><button data-type= "btn"> Rubrik och ingress</button></li>
+            </ul>
+        </div>
+    </div>
+</template>*@
