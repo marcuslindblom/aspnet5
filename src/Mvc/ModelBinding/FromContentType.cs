@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace brics.Mvc.ModelBinding
 {
@@ -9,17 +9,18 @@ namespace brics.Mvc.ModelBinding
     {
         const string ContentType = "ContentType";
 
-        public async Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {            
-            IFormCollection form = await bindingContext.OperationBindingContext.HttpContext.Request.ReadFormAsync();
+            IFormCollection form = await bindingContext.ActionContext.HttpContext.Request.ReadFormAsync();
             var contentType = form[ContentType];
             if (string.IsNullOrEmpty(contentType))
             {
-                return ModelBindingResult.NoResult;
+                bindingContext.Result = ModelBindingResult.Failed();
+                //return ModelBindingResult.NoResult;
             }
             var model = Activator.CreateInstance(Type.GetType(contentType));
 
-            return await ModelBindingResult.SuccessAsync(bindingContext.ModelName, model);
+            bindingContext.Result = ModelBindingResult.Success(model);
         }
     }
 }

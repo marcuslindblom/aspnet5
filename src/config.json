@@ -4,7 +4,7 @@
   },
   "Data": {
     "DefaultConnection": {
-      "Connectionstring": "http://live-test.ravendb.net/"
+      "Connectionstring": "http://10.10.1.191:8080"
     },
     "DefaultDatabase": "brics"
   }

@@ -12,7 +12,8 @@ namespace src.Models
         }
         public string Heading { get; set; }
 
-        [DataType(DataType.MultilineText), UIHint("LineBreak")]
+        [DataType(DataType.MultilineText)]
+        //, UIHint("LineBreak")
         public string Message { get; set; }
 
         public Link Link { get; set; }

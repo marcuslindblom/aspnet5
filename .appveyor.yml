@@ -7,8 +7,14 @@ init:
 
 # scripts that run after cloning repository
 install:
- - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
- - ps: $env:DNX_BUILD_VERSION = $env:APPVEYOR_BUILD_NUMBER
+ # Download install script to install .NET cli in .dotnet dir
+ #- ps: mkdir -Force ".\scripts\obtain\" | Out-Null
+ #- ps: Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/install.ps1" -OutFile ".\scripts\obtain\install.ps1"
+ #- ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
+ #- ps: '& .\scripts\obtain\install.ps1 -Channel "preview" -version "$env:CLI_VERSION" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath'
+ # add dotnet to PATH
+ #- ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+ #- ps: $env:DNX_BUILD_VERSION = $env:APPVEYOR_BUILD_NUMBER
  - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
  - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
  - ps: $json = Get-Content .\src\project.json -Raw | ConvertFrom-Json
@@ -18,21 +24,25 @@ install:
 
 # scripts to run before build
 before_build:
- - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
+# - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
 #- ps: dnvm install 1.0.0-beta7
- - dnvm upgrade
+# - dnvm upgrade
 #- ps: dnvm update-self
 #- ps: dnvm list
 #- ps: dnvm use 1.0.0-beta7
  - npm cache clean
 # - ps: npm install gulp bower
  - npm install -g gulp bower
- - dnu restore
+# - dnu restore
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
- - dnu build ./src
- - dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
+ - ps: dotnet --info
+ - ps: dotnet restore
+ - ps: dotnet --verbose build ./src
+ - ps: dotnet --verbose publish ./src --no-build --output AppOutput
+# - dnu build ./src
+# - dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
 
 # to run your custom scripts instead of automatic tests
 #test_script:

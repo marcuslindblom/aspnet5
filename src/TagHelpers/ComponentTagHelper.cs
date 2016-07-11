@@ -1,11 +1,11 @@
 ﻿using System;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace src.TagHelpers
 {
@@ -45,7 +45,7 @@ namespace src.TagHelpers
                 throw new ArgumentNullException(nameof(output));
             }
 
-            (_htmlHelper as ICanHasViewContext)?.Contextualize(ViewContext);
+            (_htmlHelper as IViewContextAware)?.Contextualize(ViewContext);
 
             var content = await output.GetChildContentAsync();
 
@@ -58,7 +58,7 @@ namespace src.TagHelpers
             //}
 
             //output.Attributes["id"] = "_" + context.UniqueId;
-            output.Attributes["data-module"] = "widget";
+            output.Attributes.Add("data-module", "widget");
 
             //var form = _htmlHelper.Editor(Module);
 
