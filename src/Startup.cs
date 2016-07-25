@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using src;
 using src.Models;
+using src.Routing;
 
 namespace src
 {
@@ -34,7 +34,6 @@ namespace src
 
             services.AddTransient<LayoutModel>();
 
-            //services.AddMvc();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +50,13 @@ namespace src
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            //app.UseBrickPile();
+
+            //app.UseMvc(routes =>
+            //{
+            //    //routes.DefaultHandler = new DefaultRouter(routes.DefaultHandler);
+            //});
 
             //app.UseIISPlatformHandler();
 
@@ -71,10 +77,8 @@ namespace src
                 {
                     new CultureInfo("en"),
                     new CultureInfo("sv")
-                };                
+                };
             });
-
-
 
             //app.UseMvc(routes =>
             //{

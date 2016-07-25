@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Raven.Client;
+using Raven.Abstractions.Extensions;
 
 namespace src.Mvc.ModelBinding
 {
@@ -19,7 +20,12 @@ namespace src.Mvc.ModelBinding
             {
                 throw new ArgumentException(nameof(context));
             }
-            return new DefaultModelBinder(_documentStore);
+
+            if(context.Metadata.ModelType.IsDefined(typeof(ViewModelAttribute), false)) {
+                return new DefaultModelBinder(_documentStore);
+            }
+
+            return null;            
         }
     }
 }

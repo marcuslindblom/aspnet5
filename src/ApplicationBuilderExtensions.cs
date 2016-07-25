@@ -2,11 +2,9 @@ using System;
 using System.Globalization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Client;
-using Raven.Client.Indexes;
 using src.Localization;
 using src.Models;
 using src.Mvc;
@@ -17,7 +15,13 @@ namespace src
 {
     public static class ApplicationBuilderExtensions
     {
-        public static void UseBrickPile(this IApplicationBuilder app){}
+        public static void UseBrickPile(this IApplicationBuilder app){
+
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }            
+        }
 
         public static void UseBrickPile(this IApplicationBuilder app, Action<RequestLocalizationOptions> configureOptions)
         {
@@ -25,6 +29,7 @@ namespace src
             {
                 throw new ArgumentNullException(nameof(app));
             }
+
             if (configureOptions == null)
             {
                 throw new ArgumentNullException(nameof(configureOptions));
@@ -40,58 +45,24 @@ namespace src
 
             app.UseRequestLocalization(options);
 
-            //app.UseRequestLocalization(options, new RequestCulture("sv"));
-
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
             var controllerMapper = app.ApplicationServices.GetRequiredService<IControllerMapper>();
-            //var controllerTypeProvider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
-            //var controllerFeature = app.ServerFeatures.Get<ControllerFeature>();
-
-            //var manager = app.ApplicationServices.GetService<ApplicationPartManager>();
 
             new LocalizationTransformer().Execute(documentStore);
             //IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
 
             app.UseMvc(routes =>
             {
-                //routes.DefaultHandler = new DefaultRouter(
-                //    routes.DefaultHandler,
-                //    new DefaultRouteResolver(
-                //        new RouteResolverTrie(documentStore, accessor),
-                //        new ControllerMapper(controllerTypeProvider)),                    
-                //    new DefaultVirtualPathResolver(
-                //        new RouteResolverTrie(documentStore, accessor),
-                //        new ControllerMapper(controllerTypeProvider)));
-
-                //routes.DefaultHandler = new DefaultRouter(
-                //    routes.DefaultHandler,
-                //    new DefaultRouteResolver(
-                //        new RouteResolverTrie(documentStore, requestCultureFeature),
-                //        new ControllerMapper(controllerTypeProvider),
-                //        requestCultureFeature),
-                //    new DefaultVirtualPathResolver(
-                //        new RouteResolverTrie(documentStore, requestCultureFeature),
-                //        new ControllerMapper(controllerTypeProvider)));
-
-                routes.DefaultHandler = new DefaultRouter(
-                    routes.DefaultHandler,
-                    new DefaultRouteResolver(
-                        new RouteResolverTrie(documentStore),
-                        controllerMapper),
-                    new DefaultVirtualPathResolver(
-                        new RouteResolverTrie(documentStore),
-                        controllerMapper),
-                    new RequestCulture("sv"));
-
-                //routes.Routes.Insert(0, new DefaultRouter(
-                //    routes.DefaultHandler,
-                //    new DefaultRouteResolver(
-                //        new RouteResolverTrie(documentStore),
-                //        new ControllerMapper(new ControllerFeature())),
-                //    new DefaultVirtualPathResolver(
-                //        new RouteResolverTrie(documentStore),
-                //        new ControllerMapper(new ControllerFeature())),
-                //    new RequestCulture("sv")));
+                routes.Routes.Insert(0,
+                    new DefaultRouter(
+                        routes.DefaultHandler,
+                        new DefaultRouteResolver(
+                            new RouteResolverTrie(documentStore),
+                            controllerMapper),
+                        new DefaultVirtualPathResolver(
+                            new RouteResolverTrie(documentStore),
+                            controllerMapper),
+                        new RequestCulture("sv")));
 
                 //routes.MapRoute(
                 //    name: "default_localization",
@@ -181,6 +152,23 @@ namespace src
         class Configuration
         {
             public string Id { get; set; } 
+        }
+    }
+    public static class RouteBuilderExtensions
+    {
+        public static IRouteBuilder MapBrickPileRoute(this IRouteBuilder routes)
+        {
+            //routes.DefaultHandler = new DefaultRouter(
+            //    routes.DefaultHandler,
+            //    new DefaultRouteResolver(
+            //        new RouteResolverTrie(documentStore),
+            //        controllerMapper),
+            //    new DefaultVirtualPathResolver(
+            //        new RouteResolverTrie(documentStore),
+            //        controllerMapper),
+            //    new RequestCulture("sv"));
+
+            return routes;
         }
     }
 }

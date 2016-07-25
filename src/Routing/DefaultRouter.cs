@@ -9,12 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 //using Microsoft.Extensions.OptionsModel;
 using Microsoft.Extensions.WebEncoders;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace src.Routing
 {
     public class DefaultRouter : IRouter
     {
-        private readonly IRouter _next;
+        private readonly IRouter _defaultHandler;
         private readonly IRouteResolver _routeResolver;
         private readonly IVirtualPathResolver _virtualPathResolver;
         private readonly RequestCulture _defaultRequestCulture;
@@ -27,11 +28,11 @@ namespace src.Routing
         public const string CultureKey = "culture";
         public const string CurrentPageKey = "currentPage";
 
-        public DefaultRouter(IRouter next, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver, RequestCulture defaultRequestCulture)
+        public DefaultRouter(IRouter defaultHandler, IRouteResolver routeResolver, IVirtualPathResolver virtualPathResolver, RequestCulture defaultRequestCulture)
         {
-            if (next == null)
+            if (defaultHandler == null)
             {
-                throw new ArgumentNullException(nameof(next));
+                throw new ArgumentNullException(nameof(defaultHandler));
             }
 
             if (routeResolver == null)
@@ -49,7 +50,7 @@ namespace src.Routing
                 throw new ArgumentNullException(nameof(defaultRequestCulture));
             }
 
-            _next = next;
+            _defaultHandler = defaultHandler;
             _routeResolver = routeResolver;
             _virtualPathResolver = virtualPathResolver;
             _defaultRequestCulture = defaultRequestCulture;
@@ -60,14 +61,16 @@ namespace src.Routing
             EnsureOptions(context.HttpContext);
 
             var requestCulture = DetectRequestCulture(context.HttpContext);
+
             var path = _virtualPathResolver.Resolve(context, _defaultRequestCulture, requestCulture);
+
             if (!path.HasValue)
             {
                 // We just want to act as a pass-through for link generation
-                return _next.GetVirtualPath(context);
+                return _defaultHandler.GetVirtualPath(context);
             }
           
-            var virtualPathData = new VirtualPathData(_next, path);
+            var virtualPathData = new VirtualPathData(_defaultHandler, path);
 
             return NormalizeVirtualPath(virtualPathData);
         }
@@ -93,7 +96,7 @@ namespace src.Routing
                 context.HttpContext .Items[CurrentNodeKey] = result.TrieNode;
             }
 
-            await _next.RouteAsync(context);
+            await _defaultHandler.RouteAsync(context);
         }
 
         private RequestCulture DetectRequestCulture(HttpContext context)

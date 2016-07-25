@@ -2,16 +2,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Abstractions.Extensions;
 using Raven.Abstractions.Util;
 using Raven.Client;
 using Raven.Client.Document;
-using src.Models;
 using src.Mvc;
 using src.Mvc.ModelBinding;
 using src.Routing.Trie;
@@ -52,6 +48,7 @@ namespace src
             store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]);
             store.Conventions.RegisterIdConvention<Site>((dbname, commands, site) => "sites/" + site.Culture);
             store.Conventions.RegisterAsyncIdConvention<Site>((dbname, commands, site) => new CompletedTask<string>("sites/" + site.Culture));
+
             //store.Conventions.RegisterIdConvention<Page>((databaseName, commands, page) => "pages/" + page.Id);
             //store.Conventions.RegisterAsyncIdConvention<ApplicationBuilderExtensions.MyClass>((dbname, commands, page) => new CompletedTask<string>("myclasses/" + page.PageLink));
             return store;
