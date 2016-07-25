@@ -35,7 +35,7 @@ namespace src.Areas.Brics.Controllers
         {
             using (var session = _documentStore.OpenAsyncSession())
             {
-                var model = await session.LoadAsync<dynamic>("pages/2/sv/content");
+                var model = await session.LoadAsync<dynamic>("pages/1/sv/content");
 
                 return PartialView("_Editor", new FooViewModel
                 {
@@ -52,14 +52,14 @@ namespace src.Areas.Brics.Controllers
             dynamic model;
             using (var session = _documentStore.OpenAsyncSession())
             {
-                model = await session.LoadAsync<dynamic>("pages/2/sv/content");
+                model = await session.LoadAsync<dynamic>("pages/1/sv/content");
             }
 
             if (await TryUpdateModelAsync(model, "Model"))
             {
                 using (var session = _documentStore.OpenAsyncSession())
                 {
-                    await session.StoreAsync(model, "pages/2/sv/content");
+                    await session.StoreAsync(model, "pages/1/sv/content");
                     await session.SaveChangesAsync();
                 }
             }

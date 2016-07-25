@@ -52,6 +52,9 @@ namespace src.TagHelpers
             output.PreContent.SetHtmlContent(
                 "<script type=\"text/x-config\">{ \"name\": \"" + Module + "\", \"type\": \"" + _bricsContext.CurrentNode.PageId +"\" }</script>");
 
+            output.PreElement.SetHtmlContent("<brics-editor>");
+            output.PostElement.SetHtmlContent("</brics-editor>");
+
             if (content.IsEmpty && content.IsWhiteSpace)
             {
                 output.Attributes.Add("class", "empty");

@@ -1,0 +1,42 @@
+﻿@charset "UTF-8";
+
+// Base
+@import "base/_normalize",
+        "base/_config";
+
+// Layouts
+//@import "_layouts/_l-default";
+
+// Modules
+//@import "_modules/_forms/_m-forms";
+
+
+
+
+// In the _m-forms.scss you must import all the form partials, which are in your _forms folder. The structure can look like this in one in your file:
+// Partials
+//@import "_m-form-base",
+//        "_m-form-two-one-small",
+//        "_m-form-row",
+//        "_m-form-with-prefix";
+
+// Layouts
+// Prefix "l-"
+.l-default {}
+
+// Modules
+// Prefix "m-"
+.m-accordion {}
+
+// Child element of accordion
+// Seperator: "__"
+.m-accordion__trigger {}
+
+// Modifier of accordion
+// Seperator: "--"
+.m-accordion--plain {}
+
+// States
+// Mostly with prefix like "is-"
+.is-active {}
+.is-hidden {}

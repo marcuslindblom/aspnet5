@@ -94,6 +94,7 @@
             /*width: 50%;*/
             width: 100%;
             border-left: #474747 1px solid;
+            transition: all 200ms linear;
         }
 
         .view-actions {
@@ -243,7 +244,8 @@
 
         /* Preview */
 
-        .preview nav {
+        .preview nav,
+        .preview .main-header {
             display: none;
         }
 
@@ -314,10 +316,25 @@
     <script src="~/js/app.js" asp-append-version="true"></script>
 
     @*<script>
-        Application.init({
-            debug: true
-        });
+        app.init();
     </script>*@
+
+    <template class="full-screen-widget">
+        <style>
+            :host             {
+	            width: 0;
+	            height: 0;
+	            border-top: 20px solid #999;
+	            border-right: 20px solid transparent;
+                position:fixed;
+                top:0;
+                left:0;
+                z-index:9999;
+            }
+
+        </style>
+        <span />
+    </template>
 
 <template class="widget-template">
     <style>
@@ -325,24 +342,29 @@
             /*cursor: pointer;*/
             /*outline: dashed 1px #ddd;*/
             transition: all .2s ease-in-out;
-            outline:none;
+            /*outline:none;*/
             position:relative;
         }
         :host(:hover),
-        :host(:focus) {
+        :host(:focus),
+        :host(:active),
+        :host(.focus) {
             /*background-color:#f9f9f9;*/
             /*transition: outline-color .3s ease-in;*/
-            /*outline: dashed 1px #00bfff;*/
-            box-shadow:
+            outline: dashed 5px #00bfff !important;
+            /*box-shadow:
                 0px 0px 0px 1px #fff,
-                0px 0px 0px 2px #49a7e6,
-                0px -1px 9px 1px rgba(119, 119, 119, 0.4);
+                0px 0px 0px 4px #02B875,
+                0px -1px 9px 2px rgba(119, 119, 119, 0.4);*/
+            /*box-shadow:
+                0 0 0 3px #02B875,
+                0 0 9px 2px rgba(119, 119, 119, 0.4);*/
         }
-        :host(:hover) span,
+        /*:host(:hover) span,
         :host(:focus) span {
             display:inline-block;
             bottom:-8px;
-        }
+        }*/
         :host(.empty) {
             color: #767676;
             text-align: center;
@@ -355,13 +377,12 @@
             left: 0px;
             border-width: 2px 0px 0px 2px;*/
         }
-        :host span {
+        /*:host span {
             display: none;
             position: absolute;
             bottom: -20px;
             right: -18px;
             border: 1px solid #49a7e6;
-            /*border-radius: 4px;*/
             overflow: hidden;
             -webkit-transition: border 50ms ease-in 0s;
             -moz-transition: border 50ms ease-in 0s;
@@ -375,14 +396,13 @@
             padding: 6px 0 4px;
             color: #555459;
             background: #fff;
-            /*border-right: 1px solid rgba(0,0,0,.15);*/
             -webkit-transition: all 50ms ease-in 0s;
             -moz-transition: all 50ms ease-in 0s;
             transition: all 50ms ease-in 0s;
             display: block;
             float: left;
             font-size:14px;
-        }
+        }*/
         /*:host::after,
         :host::before {
             content: "";
@@ -397,9 +417,9 @@
             transition-timing-function: cubic-bezier(0.17, 0.67, 0.05, 1.29);
         }*/
     </style>
-    <span>
+    @*<span>
         <a href="#">Edit</a>
-    </span>
+    </span>*@
     <content />
 </template>
 

@@ -18,26 +18,26 @@ var webroot = "./wwwroot";
 
 var paths = {
     js: {
-        entry: "./Content/Scripts/app.js",
-        watch: "./Content/Scripts/**/*.js",
+        entry: "./Areas/Brics/Content/Scripts/app.js",
+        watch: "./Areas/Brics/Content/Scripts/**/*.js",
         output: webroot + "/js",
     },
     scss: {
-        entry: "./Content/Scss/app.scss",
-        watch: "./Content/Scss/**/*.scss",
+        entry: "./Areas/Brics/Content/Scss/app.scss",
+        watch: "./Areas/Brics/Content/Scss/**/*.scss",
         output: webroot + "/css"
     }
 };
 
-gulp.task("clean:js", function (cb) {
-    rimraf(paths.js.output, cb);
-});
+//gulp.task("clean:js", function (cb) {
+//    rimraf(paths.js.output, cb);
+//});
 
-gulp.task("clean:scss", function (cb) {
-    rimraf(paths.scss.output, cb);
-});
+//gulp.task("clean:scss", function (cb) {
+//    rimraf(paths.scss.output, cb);
+//});
 
-gulp.task("clean", ["clean:js", "clean:scss"]);
+//gulp.task("clean", ["clean:js", "clean:scss"]);
 
 gulp.task('min:js', function () {
     return browserify({

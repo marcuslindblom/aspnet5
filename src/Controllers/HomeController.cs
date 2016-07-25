@@ -17,9 +17,9 @@ namespace src.Controllers
             _documentStore = documentStore;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(Home home)
         {
-            return View();
+            return View(home);
         }
 
         public IActionResult Contact()
