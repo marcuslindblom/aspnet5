@@ -1,11 +1,11 @@
 ﻿//using System;
 //using System.Collections.Generic;
 //using System.Linq;
-//using Microsoft.AspNet.Http;
-//using Microsoft.AspNet.Mvc;
-//using Microsoft.AspNet.Mvc.Rendering;
-//using Microsoft.AspNet.Mvc.TagHelpers;
-//using Microsoft.AspNet.Razor.TagHelpers;
+//using Microsoft.AspNetCore.Http;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc.Rendering;
+//using Microsoft.AspNetCore.Mvc.TagHelpers;
+//using Microsoft.AspNetCore.Razor.TagHelpers;
 //using Microsoft.Extensions.DependencyInjection;
 
 //namespace src.TagHelpers

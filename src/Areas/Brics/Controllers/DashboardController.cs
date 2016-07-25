@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using src.Localization;
 

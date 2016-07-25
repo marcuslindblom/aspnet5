@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
+using Microsoft.AspNetCore.Localization;
 using Raven.Client;
 
 namespace src.Routing.Trie

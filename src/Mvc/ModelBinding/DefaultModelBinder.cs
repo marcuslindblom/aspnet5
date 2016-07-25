@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Raven.Client;
+using Raven.Abstractions.Extensions;
 
 namespace src.Mvc.ModelBinding
 {
@@ -13,12 +14,12 @@ namespace src.Mvc.ModelBinding
             _documentStore = documentStore;
         }
 
-        public Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
+        public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var binderType = ResolveBinderType(bindingContext);
             if (binderType == null)
             {
-                return ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
             }
 
             var binder = (IModelBinder)Activator.CreateInstance(binderType, _documentStore);
@@ -29,20 +30,22 @@ namespace src.Mvc.ModelBinding
                 !collectionBinder.CanCreateInstance(bindingContext.ModelType))
             {
                 // Able to resolve a binder type but need a new model instance and that binder cannot create it.
-                return ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
             }
 
             return BindModelAsync(bindingContext, binder);
         }
 
-        private async Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext, IModelBinder binder)
+        private async Task BindModelAsync(ModelBindingContext bindingContext, IModelBinder binder)
         {
-            var result = await binder.BindModelAsync(bindingContext);
+            await binder.BindModelAsync(bindingContext);
+            
+/*            bindingContext.Result = await binder.BindModelAsync(bindingContext);
             var modelBindingResult = result != ModelBindingResult.NoResult
                 ? result
                 : ModelBindingResult.NoResult;
 
-            return modelBindingResult;
+            return bindingContext;*/
         }
 
         private static Type ResolveBinderType(ModelBindingContext context)

@@ -17,7 +17,7 @@ namespace src.Localization
                 {
                     page.Id,
                     Name = localizedDocument.Name ?? page.Name,
-                    page.PublishedDate,
+                    PublishedDate = localizedDocument.PublishedDate,
                     page.Acl,
                     Metadata = localizedDocument.Metadata ?? page.Metadata
                 };

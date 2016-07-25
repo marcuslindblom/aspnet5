@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Microsoft.AspNet.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace src.Mvc
 {
@@ -13,11 +14,11 @@ namespace src.Mvc
         private static readonly ConcurrentDictionary<string, string[]> ControllerActionMap =
             new ConcurrentDictionary<string, string[]>();
 
-        public ControllerMapper(IControllerTypeProvider controllerTypeProvider)
+        public ControllerMapper(ControllerFeature feature)
         {
-            foreach (var type in controllerTypeProvider.ControllerTypes)
+            foreach (var type in feature.Controllers)
             {
-                ControllerMap.TryAdd(type, type.Name.Replace("Controller", ""));
+                ControllerMap.TryAdd(type.GetType(), type.Name.Replace("Controller", ""));
                 var methodNames = type.GetMethods().Select(x => x.Name).ToArray();
                 ControllerActionMap.TryAdd(type.Name.Replace("Controller", ""), methodNames);
             }
@@ -35,7 +36,7 @@ namespace src.Mvc
             if (controllerName == null) return false;
             return ControllerActionMap.ContainsKey(controllerName) &&
                    ControllerActionMap[controllerName].Any(
-                       action => string.Equals(action, actionName, StringComparison.InvariantCultureIgnoreCase));
+                       action => string.Equals(action, actionName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

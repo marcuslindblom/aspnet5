@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Localization;
 using Raven.Client;
 
 namespace src.Models
@@ -20,8 +20,8 @@ namespace src.Models
         public void Initialize(IDocumentStore documentStore)
         {
             Id = "pages/1";
-            //MetaTitle = _bricsContextAccessor.CurrentPage.Metadata.MetaTitle;
-            //MetaDescription = _bricsContextAccessor.CurrentPage.Metadata.MetaDescription;
+            MetaTitle = _bricsContextAccessor.CurrentPage.Metadata.MetaTitle;
+            MetaDescription = _bricsContextAccessor.CurrentPage.Metadata.MetaDescription;
         }
 
         public string Id { get; set; }

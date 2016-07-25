@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<KeyValuePair<string, src.Routing.Trie.TrieNode>>*@
+﻿@using src;
 @model IEnumerable<Page>
 
 <ul class="nav navbar-nav">
@@ -9,11 +9,3 @@
         </li>
     }
 </ul>
-
-@*<ul class="nav navbar-nav">
-    @foreach (var node in Model) {
-        <li>
-            <a asp-action="Index" asp-route-id="@(node.Value.PageId)">@node.Value.Name</a>
-        </li>        
-    }
-</ul>*@

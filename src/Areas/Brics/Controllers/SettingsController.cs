@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Raven.Abstractions.Extensions;
 using Raven.Client;
 using src.Areas.Brics.Models;
@@ -65,7 +65,7 @@ namespace src.Areas.Brics.Controllers
                     return PartialView("_Settings", viewModel);
                 }
             }
-            return HttpNotFound();
+            return NotFound();
         }
         // POST api/values
         public async Task Post([FromForm] SettingsViewModel model, [FromForm] string url)

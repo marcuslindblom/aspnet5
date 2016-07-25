@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNet.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace src.Mvc
 {
-    public class DefaultContentTypeProvider : IContentTypeProvider
+/*    public class DefaultContentTypeProvider : IContentTypeProvider
     {
         private readonly IAssemblyProvider _assemblyProvider;
         public DefaultContentTypeProvider(IAssemblyProvider assemblyProvider)
@@ -23,11 +23,11 @@ namespace src.Mvc
         }
         private bool HasContentTypeAttribute(TypeInfo typeInfo)
         {
-            return typeInfo.GetCustomAttributes(typeof(ViewModelAttribute), false).Length > 0;
+            return typeInfo.GetCustomAttributes(typeof(ViewModelAttribute), false).Any();
         }
 
 
-    }
+    }*/
     public interface IContentTypeProvider
     {
         IEnumerable<TypeInfo> ContentTypes { get; }

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Routing;
 using src.Routing.Trie;
 using src.Mvc;
 
@@ -48,7 +48,7 @@ namespace src.Routing
 	            var node = trie.Result.FirstOrDefault(n => n.Value.PageId == page.Id);
 
 	            PathString path = new PathString();
-	            if (defaultRequestCulture.Culture.LCID != requestCulture.Culture.LCID)
+	            if (defaultRequestCulture.Culture.Name != requestCulture.Culture.Name)
 	            {
 	                path = path.Add("/" + requestCulture.Culture.TwoLetterISOLanguageName);
 	            }
@@ -77,7 +77,7 @@ namespace src.Routing
                 var node = trie.Result.FirstOrDefault(n => n.Value.PageId == id);
 
                 PathString path = new PathString();
-                if (defaultRequestCulture.Culture.LCID != requestCulture.Culture.LCID)
+                if (defaultRequestCulture.Culture.Name != requestCulture.Culture.Name)
                 {
                     path = path.Add("/" + requestCulture.Culture.TwoLetterISOLanguageName);
                 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
 using src.Localization;
 using src.Routing.Trie;
@@ -50,7 +50,7 @@ namespace src.Areas.Brics.Controllers
                 }
             }
 
-            return HttpNotFound();
+            return NotFound();
         }
 
         // POST api/values

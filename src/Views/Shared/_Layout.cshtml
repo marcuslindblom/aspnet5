@@ -1,6 +1,6 @@
 ﻿@using System.Threading.Tasks
-@using Microsoft.AspNet.Http.Features
-@using Microsoft.AspNet.Localization
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
 @{
     var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
     var displayName = requestCultureFeature.RequestCulture.Culture.TwoLetterISOLanguageName;

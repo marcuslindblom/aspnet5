@@ -1,14 +1,13 @@
 ﻿using System;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Razor;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Abstractions.Util;
 using Raven.Client;
 using Raven.Client.Document;
-using src.Models;
 using src.Mvc;
 using src.Mvc.ModelBinding;
 using src.Routing.Trie;
@@ -27,10 +26,10 @@ namespace src
 
                 // Setup configuration sources.                                  
                 var builder = new ConfigurationBuilder()
-                    .AddJsonFile("config.json")
-                    .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
-
-                builder.AddEnvironmentVariables();
+                    .SetBasePath(env.ContentRootPath)
+                    .AddJsonFile("config.json", optional: true, reloadOnChange: true)
+                    .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true)
+                    .AddEnvironmentVariables();                
                 return builder.Build();
             }
         }
@@ -47,8 +46,9 @@ namespace src
 
             store.Initialize();
             store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]);
-            store.Conventions.RegisterIdConvention<Site>((dbname, commands, site) => "sites/" + site.Culture.Name);
-            store.Conventions.RegisterAsyncIdConvention<Site>((dbname, commands, site) => new CompletedTask<string>("sites/" + site.Culture.Name));
+            store.Conventions.RegisterIdConvention<Site>((dbname, commands, site) => "sites/" + site.Culture);
+            store.Conventions.RegisterAsyncIdConvention<Site>((dbname, commands, site) => new CompletedTask<string>("sites/" + site.Culture));
+
             //store.Conventions.RegisterIdConvention<Page>((databaseName, commands, page) => "pages/" + page.Id);
             //store.Conventions.RegisterAsyncIdConvention<ApplicationBuilderExtensions.MyClass>((dbname, commands, page) => new CompletedTask<string>("myclasses/" + page.PageLink));
             return store;
@@ -58,9 +58,14 @@ namespace src
         {
             _serviceProvider = services.BuildServiceProvider();
 
-            services.AddMvc();
+            services.AddMvc().ConfigureApplicationPartManager(manager =>
+            {
+                var feature = new ControllerFeature();
+                manager.PopulateFeature(feature);
+                services.AddSingleton<IControllerMapper>(new ControllerMapper(feature));
+            });
 
-            services.ConfigureRouting(options =>
+            services.AddRouting(options =>
             {
                 options.AppendTrailingSlash = true;
                 options.LowercaseUrls = true;
@@ -68,12 +73,13 @@ namespace src
 
             services.Configure<MvcOptions>(options =>
             {
-                options.ModelBinders.Insert(0,new DefaultModelBinder(DocumentStore));
-                //options.Filters.Add(typeof(PublishedFilterAttribute), 1);
-                options.Filters.Add(typeof (AuthorizeFilterAttribute), 2);                
+                options.ModelBinderProviders.Insert(0, new DefaultModelBinderProvider(DocumentStore));
+                options.Filters.Add(typeof(PublishedFilterAttribute), 1);
+                options.Filters.Add(typeof(AuthorizeFilterAttribute), 2);
             });
 
-            services.AddInstance(DocumentStore);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton(DocumentStore);
             services.AddTransient<IRouteResolverTrie>(provider => new RouteResolverTrie(provider.GetService<IDocumentStore>()));
             services.AddTransient<IBricsContextAccessor>(provider => new BricsContextAccessor(provider.GetService<IHttpContextAccessor>(), provider.GetService<IDocumentStore>()));
         }

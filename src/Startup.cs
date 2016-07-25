@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNet.Localization;
+using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-using src;
 using src.Models;
+using src.Routing;
 
 namespace src
 {
@@ -17,7 +17,9 @@ namespace src
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
         }
@@ -32,7 +34,6 @@ namespace src
 
             services.AddTransient<LayoutModel>();
 
-            //services.AddMvc();            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +51,14 @@ namespace src
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseIISPlatformHandler();
+            //app.UseBrickPile();
+
+            //app.UseMvc(routes =>
+            //{
+            //    //routes.DefaultHandler = new DefaultRouter(routes.DefaultHandler);
+            //});
+
+            //app.UseIISPlatformHandler();
 
             app.UseStatusCodePages();
 
@@ -58,7 +66,8 @@ namespace src
 
             // Add localization to the request pipeline.
             app.UseBrickPile(options =>
-            {                
+            {
+                options.DefaultRequestCulture = new RequestCulture("en");
                 options.SupportedCultures = new List<CultureInfo>
                 {
                     new CultureInfo("en"),
@@ -69,10 +78,7 @@ namespace src
                     new CultureInfo("en"),
                     new CultureInfo("sv")
                 };
-                //options.DefaultRequestCulture = new RequestCulture("en");
             });
-                
-            
 
             //app.UseMvc(routes =>
             //{
@@ -84,17 +90,5 @@ namespace src
             //        template: "{controller=Home}/{action=Index}/{id?}");
             //});
         }
-
-        // Entry point for the application.
-        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
-        //public static void Main(string[] args)
-        //{
-        //    var application = new WebApplicationBuilder()
-        //        .UseConfiguration(WebApplicationConfiguration.GetDefault(args))
-        //        .UseStartup<Startup>()
-        //        .Build();
-
-        //    application.Run();
-        //}
     }
 }

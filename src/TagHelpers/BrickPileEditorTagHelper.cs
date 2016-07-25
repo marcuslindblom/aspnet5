@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.AspNet.Mvc.Rendering;
-using Microsoft.AspNet.Mvc.ViewFeatures;
-using Microsoft.AspNet.Mvc.ViewFeatures.Internal;
-using Microsoft.AspNet.Razor.TagHelpers;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using src.Models;
 
 namespace src.TagHelpers
@@ -34,7 +34,7 @@ namespace src.TagHelpers
                 throw new ArgumentNullException(nameof(output));
             }
 
-            (_htmlHelper as ICanHasViewContext)?.Contextualize(ViewContext);
+            (_htmlHelper as IViewContextAware)?.Contextualize(ViewContext);
 
             await _htmlHelper.RenderPartialAsync("~/Views/Shared/_Editor.cshtml", _bricsContextAccessor.CurrentPage);
 
