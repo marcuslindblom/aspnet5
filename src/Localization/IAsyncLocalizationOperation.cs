@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using src;
 
 namespace src.Localization
 {
@@ -12,9 +13,9 @@ namespace src.Localization
 
         Page Page { get; set; }
 
-        Task<T> LoadAsync<T>(string id, CancellationToken token = default(CancellationToken));
+        Task<Page> LoadAsync(string id, CancellationToken token = default(CancellationToken));
 
-        Task<T[]> LoadAsync<T>(IEnumerable<string> ids, CancellationToken token = default(CancellationToken));
+        Task<List<Page>> LoadAsync(IEnumerable<string> ids, CancellationToken token = default(CancellationToken));
 
         Task StoreAsync(Page page, CancellationToken token = default(CancellationToken));
     }

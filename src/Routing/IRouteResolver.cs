@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Routing;
 
 namespace src.Routing
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using Microsoft.AspNet.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace src.Mvc
 {
@@ -13,9 +13,9 @@ namespace src.Mvc
         private static readonly ConcurrentDictionary<string, string[]> ControllerActionMap =
             new ConcurrentDictionary<string, string[]>();
 
-        public ControllerMapper(IControllerTypeProvider controllerTypeProvider)
+        public ControllerMapper(ControllerFeature controllerTypeProvider)
         {
-            foreach (var type in controllerTypeProvider.ControllerTypes)
+            foreach (var type in controllerTypeProvider.Controllers)
             {
                 ControllerMap.TryAdd(type, type.Name.Replace("Controller", ""));
                 var methodNames = type.GetMethods().Select(x => x.Name).ToArray();

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Routing;
 using src.Routing.Trie;
 using src.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Localization;
 
 namespace src.Routing
 {

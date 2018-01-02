@@ -9,7 +9,7 @@ namespace src
 {
     public class Site
     {
-        public Site(string name, CultureInfo culture, bool isDefaultCulture = false)
+        public Site(string name, string culture, bool isDefaultCulture = false)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -35,7 +35,7 @@ namespace src
 
         public string Name { get; set; }
 
-        public CultureInfo Culture { get; set; }
+        public string Culture { get; set; }
 
         public Trie Trie { get; set; }
     }

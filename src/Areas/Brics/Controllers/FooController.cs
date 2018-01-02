@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNet.Mvc;
 using src.Models;
 using brics.Mvc.ModelBinding;
 using Raven.Client;
 using src.Localization;
 using System.Globalization;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 

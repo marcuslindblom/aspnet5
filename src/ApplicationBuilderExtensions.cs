@@ -1,11 +1,11 @@
 using System;
 using System.Globalization;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc.Controllers;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Client;
-using Raven.Client.Indexes;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
 using src.Localization;
 using src.Models;
 using src.Mvc;
@@ -37,10 +37,9 @@ namespace src
                 Options = options
             });
 
-            app.UseRequestLocalization(options, new RequestCulture("sv"));
+            app.UseRequestLocalization(options);
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
-            var controllerTypeProvider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
 
             IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
 
@@ -69,11 +68,11 @@ namespace src
                     routes.DefaultHandler,
                     new DefaultRouteResolver(
                         new RouteResolverTrie(documentStore),
-                        new ControllerMapper(controllerTypeProvider)),
+                        app.ApplicationServices.GetService<IControllerMapper>()),
                     new DefaultVirtualPathResolver(
                         new RouteResolverTrie(documentStore),
-                        new ControllerMapper(controllerTypeProvider)),
-                    new RequestCulture("sv")));
+                        app.ApplicationServices.GetService<IControllerMapper>()),
+                    options.DefaultRequestCulture));
 
                 //routes.MapRoute(
                 //    name: "default_localization",
@@ -89,7 +88,7 @@ namespace src
 
             });
 
-            app.UseSampleData(options);
+            Task.Run(() => app.UseSampleData(options)).Wait();
 
         }
 
@@ -97,15 +96,15 @@ namespace src
         {
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
 
-            var config = documentStore.DatabaseCommands.Head("brickpile/configuration");
+            var config = documentStore.OpenSession().Advanced.Exists("brickpile/configuration");
 
-            if (config != null) return;
+            if (config) return;
 
             using (var session = documentStore.OpenAsyncSession())
             {
                 foreach (var culture in options.SupportedCultures)
                 {
-                    await session.StoreAsync(new Site(culture.DisplayName, culture, new CultureInfo("en").LCID == culture.LCID));
+                    await session.StoreAsync(new Site(culture.DisplayName, culture.TwoLetterISOLanguageName, new CultureInfo("en").LCID == culture.LCID));
                     // await session.StoreAsync(new Site(culture.DisplayName, culture, options.DefaultRequestCulture.Culture.LCID == culture.LCID));
                 }
                 await session.StoreAsync(new Configuration { Id = "brickpile/configuration" });
@@ -134,6 +133,7 @@ namespace src
             {
                 // Create a new language for a page
                 var home = await session.LoadAsync<Page>("pages/1");
+
                 await session
                     //.For(home)
                     .LocalizeFor(home, new CultureInfo("sv"))

@@ -4,7 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Raven.Client;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Queries;
+using Raven.Client.Documents.Session;
 using src.Routing.Trie;
+using src;
 
 namespace src.Localization
 {
@@ -25,22 +30,40 @@ namespace src.Localization
             _locale = locale;
         }
 
-        public Task<T> LoadAsync<T>(string id, CancellationToken token = default(CancellationToken))
+        public Task<Page> LoadAsync(string id, CancellationToken token = default(CancellationToken))
         {
-            return _session.LoadAsync<LocalizationTransformer, T>(id,
-                configuration =>
-                {
-                    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
-                }, token);
+            var postfix = $"/{_locale.TwoLetterISOLanguageName}";
+            var query = from page in _session.Query<Page>()
+                        where page.Id == id
+                        let localizedDocument = RavenQuery.Load<Page>(page.Id + postfix)
+                        select new Page
+                        {
+                            Id = page.Id,
+                            Name = localizedDocument.Name,
+                        };
+
+            return query.FirstOrDefaultAsync();
+
+            //return _session.LoadAsync<LocalizationTransformer, T>(id,
+                //configuration =>
+                //{
+                //    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
+                //}, token);
         }
 
-        public Task<T[]> LoadAsync<T>(IEnumerable<string> ids, CancellationToken token = default(CancellationToken))
+        public Task<List<Page>> LoadAsync(IEnumerable<string> ids, CancellationToken token = default(CancellationToken))
         {
-            return _session.LoadAsync<LocalizationTransformer, T>(ids,
-                configuration =>
-                {
-                    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
-                }, token);
+            var postfix = $"/{_locale.TwoLetterISOLanguageName}";
+            var query = from page in _session.Query<Page>()
+                        where page.Id.In(ids)
+                        let localizedDocument = RavenQuery.Load<Page>(page.Id + postfix)
+                        select new Page
+                        {
+                            Id = page.Id,
+                            Name = localizedDocument.Name,
+                        };
+
+            return query.ToListAsync();
         }
 
         public Task StoreAsync(Page localizedPage, CancellationToken token = default(CancellationToken))

@@ -1,7 +1,7 @@
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing;
 using src.Routing.Trie;

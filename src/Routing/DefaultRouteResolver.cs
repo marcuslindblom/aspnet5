@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Routing;
 using src.Mvc;
 using src.Routing.Trie;
 
@@ -33,7 +33,7 @@ namespace src.Routing
 
             PathString remaining = context.HttpContext.Request.Path;
 
-            if (context.HttpContext.Request.Path.Value.StartsWith("/" + requestCulture.Culture.TwoLetterISOLanguageName))
+            if (context.HttpContext.Request.Path.Value.StartsWith("/" + requestCulture.Culture.TwoLetterISOLanguageName, StringComparison.InvariantCultureIgnoreCase))
             {
                 remaining = remaining.Value.Substring(3);
             }

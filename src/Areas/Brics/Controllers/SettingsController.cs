@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Rendering;
-using Raven.Abstractions.Extensions;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Areas.Brics.Models;
 using src.Localization;
 using src.Mvc;
@@ -45,7 +45,7 @@ namespace src.Areas.Brics.Controllers
             {
                 using (var session = _documentStore.OpenAsyncSession())
                 {
-                    var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>(node.PageId);
+                    var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync(node.PageId);
                     var viewModel = new SettingsViewModel
                     {
                         CurrentPage = page,
@@ -65,7 +65,7 @@ namespace src.Areas.Brics.Controllers
                     return PartialView("_Settings", viewModel);
                 }
             }
-            return HttpNotFound();
+            return NotFound();
         }
         // POST api/values
         public async Task Post([FromForm] SettingsViewModel model, [FromForm] string url)
@@ -74,7 +74,7 @@ namespace src.Areas.Brics.Controllers
             {
                 using (var session = _documentStore.OpenAsyncSession())
                 {
-                    var p = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>(model.CurrentPage.Id);
+                    var p = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync(model.CurrentPage.Id);
 
                     if (await TryUpdateModelAsync(p, "CurrentPage"))
                     {

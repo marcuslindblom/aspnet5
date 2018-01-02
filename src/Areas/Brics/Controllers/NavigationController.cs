@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing.Trie;
 
@@ -45,12 +46,12 @@ namespace src.Areas.Brics.Controllers
                 using (var session = _documentStore.OpenAsyncSession())
                 {                    
                     var ids = trie.ChildrenOf(url).Select(x => x.Value.PageId);
-                    var pages = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>(ids);
+                    var pages = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync(ids);
                     return PartialView("_Navigation", pages);
                 }
             }
 
-            return HttpNotFound();
+            return NotFound();
         }
 
         // POST api/values

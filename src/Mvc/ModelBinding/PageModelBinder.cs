@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc.ModelBinding;
-using Raven.Client;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing;
 using src.Routing.Trie;
@@ -16,28 +15,31 @@ namespace src.Mvc.ModelBinding
         {
             _documentStore = documentStore;
         }
-        public async Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
+
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             object value;
-            if (!bindingContext.OperationBindingContext.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
+            if (!bindingContext.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
             {
-                return await ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
+                return;
             }
             TrieNode node = value as TrieNode;
             if (node == null)
             {
-                return await ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
+                return;
             }
 
-            var requestCultureFeature = bindingContext.OperationBindingContext.HttpContext.Features.Get<IRequestCultureFeature>();
+            var requestCultureFeature = bindingContext.HttpContext.Features.Get<IRequestCultureFeature>();
             var requestCulture = requestCultureFeature.RequestCulture;
 
             using (var session = _documentStore.OpenAsyncSession())
             {
-                var localizedPage = await session.LocalizeFor(requestCulture.Culture).LoadAsync<Page>(node.PageId);
-                bindingContext.OperationBindingContext.HttpContext.Items[DefaultRouter.CurrentPageKey] = localizedPage;
-                return await ModelBindingResult.SuccessAsync(bindingContext.ModelName, localizedPage);
-            }
+                var localizedPage = await session.LocalizeFor(requestCulture.Culture).LoadAsync(node.PageId);
+                bindingContext.HttpContext.Items[DefaultRouter.CurrentPageKey] = localizedPage;
+                bindingContext.Result = ModelBindingResult.Success(localizedPage);
+            }            
         }
     }
 }

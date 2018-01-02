@@ -1,6 +1,6 @@
 ﻿@using System.Threading.Tasks
-@using Microsoft.AspNet.Http.Features
-@using Microsoft.AspNet.Localization
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
 @{
     var requestCultureFeature = Context.Features.Get<IRequestCultureFeature>();
     var displayName = requestCultureFeature.RequestCulture.Culture.TwoLetterISOLanguageName;
@@ -39,7 +39,7 @@
             <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.5/css/bootstrap.min.css"
                   asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
                   asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"/>
-            <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
+            <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
         </environment>
     </head>
 <body>
@@ -64,7 +64,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a asp-action="Index" asp-route-id="pages/1" asp-route-culture="@languageSwitcher">
+                                <a asp-action="Index" asp-route-id="@LayoutModel.Id" asp-route-culture="@languageSwitcher">
                                     <span class="lang-xs lang-lbl-full" lang="@languageSwitcher"></span>
                                 </a>
                             </li>

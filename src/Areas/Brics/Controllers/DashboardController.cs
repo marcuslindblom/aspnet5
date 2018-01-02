@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Raven.Client;
+using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents;
 using src.Localization;
 
 namespace src.Areas.Brics.Controllers
@@ -23,7 +23,7 @@ namespace src.Areas.Brics.Controllers
         {
             using (var session = _store.OpenAsyncSession())
             {
-                var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>("pages/" + id);
+                var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync("pages/" + id);
                 return View(page);
             }
         }

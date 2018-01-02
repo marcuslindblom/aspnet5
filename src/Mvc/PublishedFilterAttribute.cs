@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using src.Routing;
 
@@ -8,9 +8,9 @@ namespace src.Mvc
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 
-    public class PublishedFilterAttribute : AuthorizationFilterAttribute
+    public class PublishedFilterAttribute : Attribute, IAuthorizationFilter
     {
-        public override void OnAuthorization(AuthorizationContext context)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
             object value;
             if (context.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
@@ -20,14 +20,14 @@ namespace src.Mvc
 
                 if (!currentPage.PublishedDate.HasValue)
                 {
-                    context.Result = new HttpNotFoundResult();
+                    context.Result = new NotFoundResult();
                 }
 
                 if (currentPage.PublishedDate != null && currentPage.PublishedDate.Value > DateTime.Now)
                 {
-                    context.Result = new HttpNotFoundResult();
+                    context.Result = new NotFoundResult();
                 }
-            }
+            }            
         }
     }
 }

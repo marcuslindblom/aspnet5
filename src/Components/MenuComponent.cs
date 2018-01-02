@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing.Trie;
 
@@ -32,7 +32,9 @@ namespace src.Components
             using (var session = _documentStore.OpenAsyncSession())
             {
                 var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
-                var pages = await session.LocalizeFor(requestCultureFeature.RequestCulture.Culture).LoadAsync<Page>(ids);
+                //var query = await session.LoadAsync<Page>(ids);
+                var pages = await session.LocalizeFor(requestCultureFeature.RequestCulture.Culture).LoadAsync(ids);
+                //var pages = query.Select(x => x.Value).ToList();
                 return View(pages);
             }
 

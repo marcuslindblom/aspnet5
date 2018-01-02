@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Raven.Client;
+using Raven.Client.Documents.Session;
 using src.Mvc;
 using src.Security;
 

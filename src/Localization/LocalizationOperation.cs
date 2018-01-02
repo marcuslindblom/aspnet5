@@ -1,5 +1,6 @@
 using System.Globalization;
 using Raven.Client;
+using Raven.Client.Documents.Session;
 
 namespace src.Localization
 {
@@ -19,11 +20,12 @@ namespace src.Localization
         public Page Page { get; set; }
         public T Load<T>(string id)
         {
-            return _session.Load<LocalizationTransformer, T>(id,
-                configuration =>
-                {
-                    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
-                });
+            return _session.Load<T>(id);
+            //return _session.Load<LocalizationTransformer, T>(id,
+                //configuration =>
+                //{
+                //    configuration.AddTransformerParameter("Locale", _locale.TwoLetterISOLanguageName);
+                //});
         }
     }
 }
