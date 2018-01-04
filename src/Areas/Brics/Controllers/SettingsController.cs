@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,11 +22,14 @@ namespace src.Areas.Brics.Controllers
     {
         private readonly IDocumentStore _documentStore;
         private readonly IRouteResolverTrie _trieResolver;
+        private readonly IHttpContextAccessor _context;
+        private RequestCulture CurrentRequestCulture => _context.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture;
 
-        public SettingsController(IDocumentStore documentStore, IRouteResolverTrie trieResolver)
+        public SettingsController(IDocumentStore documentStore, IRouteResolverTrie trieResolver, IHttpContextAccessor context)
         {
             _documentStore = documentStore;
             _trieResolver = trieResolver;
+            _context = context;
         }
 
         // GET: api/values
@@ -39,13 +43,13 @@ namespace src.Areas.Brics.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id, string url)
         {
-            var trie = await _trieResolver.LoadTrieAsync(new RequestCulture(CultureInfo.CurrentCulture));
+            var trie = await _trieResolver.LoadTrieAsync(CurrentRequestCulture);
             TrieNode node;
             if (trie.TryGetNode(url, out node))
             {
                 using (var session = _documentStore.OpenAsyncSession())
                 {
-                    var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync(node.PageId);
+                    var page = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(node.PageId);
                     var viewModel = new SettingsViewModel
                     {
                         CurrentPage = page,
@@ -74,12 +78,12 @@ namespace src.Areas.Brics.Controllers
             {
                 using (var session = _documentStore.OpenAsyncSession())
                 {
-                    var p = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync(model.CurrentPage.Id);
+                    var p = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(model.CurrentPage.Id);
 
                     if (await TryUpdateModelAsync(p, "CurrentPage"))
                     {
                         await session
-                            .LocalizeFor(model.CurrentPage, CultureInfo.CurrentCulture)
+                            .LocalizeFor(model.CurrentPage, CurrentRequestCulture)
                             .ForUrl(url)
                             .StoreAsync(p);
 

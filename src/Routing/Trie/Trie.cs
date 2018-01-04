@@ -150,10 +150,10 @@ namespace src.Routing.Trie
             {
                 if (match.Success)
                 {
-                    return nodes.Where(x => x.Key == match.Value);
+                    yield return nodes.Where(x => x.Key == match.Value).FirstOrDefault();
                 }    
             }
-            return null;
+            //return null;
             //return includeRoot ? nodes.Where(x => x.Key.StartsWith(key)) : nodes.Where(x => x.Key != key && x.Key.StartsWith(key));
         }
 
