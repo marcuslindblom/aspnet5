@@ -1,9 +1,12 @@
 using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Authorization;
-using Microsoft.AspNet.Mvc;
-using Raven.Client;
-using src.Localization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Queries;
 using src.Models;
 
 namespace src.Controllers
@@ -12,13 +15,30 @@ namespace src.Controllers
     public class HomeController : Controller
     {
         private readonly IDocumentStore _documentStore;
-        public HomeController(IDocumentStore documentStore)
+        private readonly IOptions<RequestLocalizationOptions> _requestLocalizationOptions;
+        public HomeController(IDocumentStore documentStore, IOptions<RequestLocalizationOptions> requestLocalizationOptions)
         {
             _documentStore = documentStore;
+            _requestLocalizationOptions = requestLocalizationOptions;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(Page currentPage, Home model)
         {
+            using(var session = _documentStore.OpenAsyncSession()) {                
+                var postfix = $"/en";
+                var query = from page in session.Query<Page>()
+                            where page.Id.In(new[] { "pages/33-A" })
+                            let localizedDocument = RavenQuery.Load<Page>(page.Id + postfix)
+                            let metadata = RavenQuery.Metadata(page)
+                            select new
+                            {
+                                Id = page.Id,
+                                Name = localizedDocument.Name,
+                                Metadata = metadata
+                            };
+
+                var result = await query.ToListAsync();
+            }
             return View();
         }
 

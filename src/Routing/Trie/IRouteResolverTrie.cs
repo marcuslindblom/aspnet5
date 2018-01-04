@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
+using Microsoft.AspNetCore.Localization;
 
 namespace src.Routing.Trie
 {

@@ -2,9 +2,8 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
-using Microsoft.Extensions.Globalization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 
 namespace src.Localization
 {
@@ -30,17 +29,16 @@ namespace src.Localization
 
             if (cultureValue.Success)
             {
-                
-                var culture = CultureInfoCache.GetCultureInfo(cultureValue.Groups[1].Value, Options.SupportedCultures);
-                var uiCulture = CultureInfoCache.GetCultureInfo(cultureValue.Groups[1].Value, Options.SupportedCultures);
+
+                var culture = CultureInfo.CurrentCulture;
+                var uiCulture = CultureInfo.CurrentUICulture;
 
                 if (culture == null || uiCulture == null)
                 {
                     return Task.FromResult((ProviderCultureResult)null);
                 }
 
-                //if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
-                if(culture.Name == new CultureInfo("sv").TwoLetterISOLanguageName)
+                if (culture.Name == Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName)
                 {
                     if (httpContext.Request.Path.Equals(new PathString("/" + culture.TwoLetterISOLanguageName)))
                     {
@@ -59,9 +57,7 @@ namespace src.Localization
             }
             else
             {
-                //var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
-                var requestCulture = new ProviderCultureResult(new CultureInfo("sv").TwoLetterISOLanguageName, new CultureInfo("sv").TwoLetterISOLanguageName);
-
+                var requestCulture = new ProviderCultureResult(Options.DefaultRequestCulture.Culture.TwoLetterISOLanguageName, Options.DefaultRequestCulture.UICulture.TwoLetterISOLanguageName);
                 return Task.FromResult(requestCulture);
             }
         }

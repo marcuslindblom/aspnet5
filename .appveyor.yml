@@ -1,5 +1,6 @@
 # Operating system (build VM template)
-os: Windows Server 2012
+# os: Windows Server 2012
+image: Visual Studio 2017
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -7,8 +8,14 @@ init:
 
 # scripts that run after cloning repository
 install:
- - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
- - ps: $env:DNX_BUILD_VERSION = $env:APPVEYOR_BUILD_NUMBER
+ # Download install script to install .NET cli in .dotnet dir
+ #- ps: mkdir -Force ".\scripts\obtain\" | Out-Null
+ #- ps: Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/rel/1.0.0/scripts/obtain/install.ps1" -OutFile ".\scripts\obtain\install.ps1"
+ #- ps: $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
+ #- ps: '& .\scripts\obtain\install.ps1 -Channel "preview" -version "$env:CLI_VERSION" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath'
+ # add dotnet to PATH
+ #- ps: $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+ #- ps: $env:DNX_BUILD_VERSION = $env:APPVEYOR_BUILD_NUMBER
  - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
  - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
  - ps: $json = Get-Content .\src\project.json -Raw | ConvertFrom-Json
@@ -18,29 +25,28 @@ install:
 
 # scripts to run before build
 before_build:
- - set PATH=%USERPROFILE%\.dnx\bin;%PATH%
-#- ps: dnvm install 1.0.0-beta7
- - dnvm upgrade
-#- ps: dnvm update-self
-#- ps: dnvm list
-#- ps: dnvm use 1.0.0-beta7
- - npm cache clean
+# Display .NET Core version
+ - cmd: dotnet --version
+# Display minimal restore text
+ - cmd: dotnet restore ./src/src.csproj --verbosity m
+# - npm cache clean
 # - ps: npm install gulp bower
- - npm install -g gulp bower
- - dnu restore
+# - npm install -g gulp bower
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
- - dnu build ./src
- - dnu publish ./src --configuration Release -o AppOutput --runtime "active" --wwwroot "wwwroot" --wwwroot-out "wwwroot" --iis-command "web" --quiet
+# output will be in ./src/bin/debug/netcoreapp1.1/publish
+ - cmd: dotnet publish ./src/src.csproj
 
 # to run your custom scripts instead of automatic tests
 #test_script:
 # - ps: dnx -p .\test test
 
 artifacts:
- - path: /AppOutput
+ - path: '\src\bin\Debug\netcoreapp2.0\publish'
    name: AppOutput
+
+clone_depth: 1
 
 deploy:
  - provider: Environment

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Routing;
 using System.Linq;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.OptionsModel;
-using Microsoft.Extensions.WebEncoders;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace src.Routing
 {
@@ -56,9 +54,9 @@ namespace src.Routing
 
         public VirtualPathData GetVirtualPath(VirtualPathContext context)
         {
-            EnsureOptions(context.Context);
+            EnsureOptions(context.HttpContext);
 
-            var requestCulture = DetectRequestCulture(context.Context);
+            var requestCulture = DetectRequestCulture(context.HttpContext);
             var path = _virtualPathResolver.Resolve(context, _defaultRequestCulture, requestCulture);
             if (!path.HasValue)
             {
@@ -68,8 +66,7 @@ namespace src.Routing
           
             var virtualPathData = new VirtualPathData(_next, path);
 
-            context.IsBound = true;
-
+            //context.IsBound = true;
             return NormalizeVirtualPath(virtualPathData);
         }
 
@@ -83,8 +80,6 @@ namespace src.Routing
                 return;
             }
 
-            //context.RouteData.Routers.Insert(0,_next);
-
             var requestCulture = DetectRequestCulture(context.HttpContext);
 
             IResolveResult result = await _routeResolver.Resolve(context, requestCulture);
@@ -93,7 +88,7 @@ namespace src.Routing
                 context.RouteData.Values[ControllerKey] = result.Controller;
                 context.RouteData.Values[ActionKey] = result.Action;
 
-                context.HttpContext .Items[CurrentNodeKey] = result.TrieNode;
+                context.HttpContext.Items[CurrentNodeKey] = result.TrieNode;
             }
 
             await _next.RouteAsync(context);
@@ -116,22 +111,22 @@ namespace src.Routing
 
             if (!string.IsNullOrEmpty(url) && (_options.LowercaseUrls || _options.AppendTrailingSlash))
             {
-                var indexOfSeparator = url.Value.IndexOfAny(new char[] { '?', '#' });
+                var indexOfSeparator = url.IndexOfAny(new char[] { '?', '#' });
                 var urlWithoutQueryString = url;
                 var queryString = string.Empty;
 
                 if (indexOfSeparator != -1)
                 {
-                    urlWithoutQueryString = url.Value.Substring(0, indexOfSeparator);
-                    queryString = url.Value.Substring(indexOfSeparator);
+                    urlWithoutQueryString = url.Substring(0, indexOfSeparator);
+                    queryString = url.Substring(indexOfSeparator);
                 }
 
                 if (_options.LowercaseUrls)
                 {
-                    urlWithoutQueryString = urlWithoutQueryString.Value.ToLowerInvariant();
+                    urlWithoutQueryString = urlWithoutQueryString.ToLowerInvariant();
                 }
 
-                if (_options.AppendTrailingSlash && !urlWithoutQueryString.Value.EndsWith("/"))
+                if (_options.AppendTrailingSlash && !urlWithoutQueryString.EndsWith("/", StringComparison.InvariantCulture))
                 {
                     urlWithoutQueryString += "/";
                 }

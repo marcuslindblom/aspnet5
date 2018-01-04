@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing.Trie;
 
@@ -19,11 +21,14 @@ namespace src.Areas.Brics.Controllers
     {
         private readonly IDocumentStore _documentStore;
         private readonly IRouteResolverTrie _trieResolver;
+        private readonly IHttpContextAccessor _context;
+        private RequestCulture CurrentRequestCulture => _context.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture;
 
-        public NavigationController(IDocumentStore documentStore, IRouteResolverTrie trieResolver)
+        public NavigationController(IDocumentStore documentStore, IRouteResolverTrie trieResolver, IHttpContextAccessor context)
         {
             _documentStore = documentStore;
             _trieResolver = trieResolver;
+            _context = context;
         }
 
         // GET: api/values
@@ -45,12 +50,12 @@ namespace src.Areas.Brics.Controllers
                 using (var session = _documentStore.OpenAsyncSession())
                 {                    
                     var ids = trie.ChildrenOf(url).Select(x => x.Value.PageId);
-                    var pages = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>(ids);
+                    var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(ids);
                     return PartialView("_Navigation", pages);
                 }
             }
 
-            return HttpNotFound();
+            return NotFound();
         }
 
         // POST api/values

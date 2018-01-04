@@ -1,7 +1,9 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
-using Raven.Client;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Raven.Client.Documents;
 using src.Localization;
 
 namespace src.Areas.Brics.Controllers
@@ -12,10 +14,12 @@ namespace src.Areas.Brics.Controllers
     public class DashboardController : Controller
     {
         private readonly IDocumentStore _store;
+        private readonly IOptions<RequestLocalizationOptions> _requestLocalizationOptions;
 
-        public DashboardController(IDocumentStore store)
+        public DashboardController(IDocumentStore store, IOptions<RequestLocalizationOptions> requestLocalizationOptions)
         {
             _store = store;
+            _requestLocalizationOptions = requestLocalizationOptions;
         }
 
         // GET: /<controller>/
@@ -23,7 +27,7 @@ namespace src.Areas.Brics.Controllers
         {
             using (var session = _store.OpenAsyncSession())
             {
-                var page = await session.LocalizeFor(CultureInfo.CurrentCulture).LoadAsync<Page>("pages/" + id);
+                var page = await session.LocalizeFor(_requestLocalizationOptions.Value.DefaultRequestCulture).LoadAsync("pages/" + id);
                 return View(page);
             }
         }

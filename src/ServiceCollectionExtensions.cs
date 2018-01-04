@@ -1,14 +1,14 @@
 ﻿using System;
-using Microsoft.AspNet.Hosting;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Mvc;
-using Microsoft.AspNet.Mvc.Razor;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Abstractions.Util;
-using Raven.Client;
-using Raven.Client.Document;
-using src.Models;
+using Raven.Client.Documents;
 using src.Mvc;
 using src.Mvc.ModelBinding;
 using src.Routing.Trie;
@@ -22,16 +22,7 @@ namespace src
         {
             get
             {
-                var env = ActivatorUtilities.GetServiceOrCreateInstance<IHostingEnvironment>(_serviceProvider);
-                //var appEnv = ActivatorUtilities.GetServiceOrCreateInstance<IApplicationEnvironment>(_serviceProvider);
-
-                // Setup configuration sources.                                  
-                var builder = new ConfigurationBuilder()
-                    .AddJsonFile("config.json")
-                    .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
-
-                builder.AddEnvironmentVariables();
-                return builder.Build();
+                return ActivatorUtilities.GetServiceOrCreateInstance<IConfiguration>(_serviceProvider);
             }
         }
 
@@ -41,16 +32,17 @@ namespace src
         {
             var store = new DocumentStore
             {
-                Url = Configuration["Data:DefaultConnection:ConnectionString"],
-                DefaultDatabase = Configuration["Data:DefaultDatabase"]
+                Urls = new string[] { Configuration["Data:DefaultConnection:ConnectionString"] },
+                Database = Configuration["Data:DefaultDatabase"]
             };
 
-            store.Initialize();
-            store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]);
-            store.Conventions.RegisterIdConvention<Site>((dbname, commands, site) => "sites/" + site.Culture.Name);
-            store.Conventions.RegisterAsyncIdConvention<Site>((dbname, commands, site) => new CompletedTask<string>("sites/" + site.Culture.Name));
+            //store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]); // TODO Is this possible?
+            //store.Conventions.RegisterIdLoadConvention<Site>((dbname, site) => "sites/" + site.Culture.Name);
+            store.Conventions.RegisterAsyncIdConvention<Site>((dbname, site) => Task.FromResult($"sites/{site.Culture}"));
+
             //store.Conventions.RegisterIdConvention<Page>((databaseName, commands, page) => "pages/" + page.Id);
             //store.Conventions.RegisterAsyncIdConvention<ApplicationBuilderExtensions.MyClass>((dbname, commands, page) => new CompletedTask<string>("myclasses/" + page.PageLink));
+            store.Initialize();
             return store;
         });
 
@@ -58,9 +50,14 @@ namespace src
         {
             _serviceProvider = services.BuildServiceProvider();
 
-            services.AddMvc();
+            services.AddMvc().ConfigureApplicationPartManager(manager =>
+            {
+                var feature = new ControllerFeature();
+                manager.PopulateFeature(feature);
+                services.AddSingleton<IControllerMapper>(new ControllerMapper(feature));
+            });
 
-            services.ConfigureRouting(options =>
+            services.AddRouting(options =>
             {
                 options.AppendTrailingSlash = true;
                 options.LowercaseUrls = true;
@@ -68,13 +65,23 @@ namespace src
 
             services.Configure<MvcOptions>(options =>
             {
-                options.ModelBinders.Insert(0,new DefaultModelBinder(DocumentStore));
+                options.ModelBinderProviders.Insert(0, new DefaultModelBinderProvider(DocumentStore));
                 //options.Filters.Add(typeof(PublishedFilterAttribute), 1);
                 options.Filters.Add(typeof (AuthorizeFilterAttribute), 2);                
             });
 
-            services.AddInstance(DocumentStore);
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper>(x =>
+            {
+                var actionContext = x.GetService<IActionContextAccessor>().ActionContext;
+                return new UrlHelper(actionContext);
+            });
+
+            services.AddSingleton(DocumentStore);
             services.AddTransient<IRouteResolverTrie>(provider => new RouteResolverTrie(provider.GetService<IDocumentStore>()));
+
             services.AddTransient<IBricsContextAccessor>(provider => new BricsContextAccessor(provider.GetService<IHttpContextAccessor>(), provider.GetService<IDocumentStore>()));
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace src.Localization
+﻿using System.Threading.Tasks;
+
+namespace src.Localization
 {
     public interface ILocalizationOperation 
     {
@@ -8,6 +10,6 @@
 
         Page Page { get; set; }
 
-        T Load<T>(string id);
+        Page Load(string id);
     }
 }

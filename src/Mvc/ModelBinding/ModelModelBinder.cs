@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Raven.Client;
+using Raven.Client.Documents;
 using src.Routing;
 using src.Routing.Trie;
 
@@ -16,27 +16,29 @@ namespace src.Mvc.ModelBinding
         {
             _documentStore = documentStore;
         }
-        public async Task<ModelBindingResult> BindModelAsync(ModelBindingContext bindingContext)
+
+        public async Task BindModelAsync(ModelBindingContext bindingContext)
         {
             object value;
-            if(!bindingContext.OperationBindingContext.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
+            if(!bindingContext.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
             {
-                return await ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
+                return;
             }
             TrieNode node = value as TrieNode;
             if (node == null)
             {
-                return await ModelBindingResult.NoResultAsync;
+                bindingContext.Result = ModelBindingResult.Failed();
+                return;
             }
 
-            var requestCultureFeature = bindingContext.OperationBindingContext.HttpContext.Features.Get<IRequestCultureFeature>();
+            var requestCultureFeature = bindingContext.HttpContext.Features.Get<IRequestCultureFeature>();
             var requestCulture = requestCultureFeature.RequestCulture;
 
             using (var session = _documentStore.OpenAsyncSession())
             {
-                return await ModelBindingResult.SuccessAsync(bindingContext.FieldName,
-                    await session.LoadAsync<dynamic>(string.Join("/", node.PageId, requestCulture.Culture.TwoLetterISOLanguageName,"content")));
-            }
+                bindingContext.Result = ModelBindingResult.Success(await session.LoadAsync<dynamic>(string.Join("/", node.PageId, requestCulture.Culture.TwoLetterISOLanguageName, "content")));
+            }            
         }
     }
 }

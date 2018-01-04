@@ -1,6 +1,6 @@
 ﻿// For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-using Microsoft.AspNet.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Raven.Client;
 
 namespace src.Areas.Brics.Models

@@ -1,7 +1,6 @@
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Raven.Client;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Raven.Client.Documents;
 using src.Localization;
 using src.Routing;
 using src.Routing.Trie;
@@ -39,7 +38,7 @@ namespace src
                     {
                         using (var session = _documentStore.OpenSession())
                         {
-                            _currentPage = session.LocalizeFor(CurrentRequestCulture.Culture).Load<Page>(CurrentNode.PageId);
+                            _currentPage = session.LocalizeFor(CurrentRequestCulture).Load(CurrentNode.PageId);
                         }
                     }                    
                 }

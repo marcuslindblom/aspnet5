@@ -1,11 +1,11 @@
 using System;
 using System.Globalization;
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc.Controllers;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Client;
-using Raven.Client.Indexes;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
 using src.Localization;
 using src.Models;
 using src.Mvc;
@@ -16,7 +16,13 @@ namespace src
 {
     public static class ApplicationBuilderExtensions
     {
-        public static void UseBrickPile(this IApplicationBuilder app){}
+        public static void UseBrickPile(this IApplicationBuilder app){
+
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }            
+        }
 
         public static void UseBrickPile(this IApplicationBuilder app, Action<RequestLocalizationOptions> configureOptions)
         {
@@ -24,6 +30,7 @@ namespace src
             {
                 throw new ArgumentNullException(nameof(app));
             }
+
             if (configureOptions == null)
             {
                 throw new ArgumentNullException(nameof(configureOptions));
@@ -37,44 +44,35 @@ namespace src
                 Options = options
             });
 
-            app.UseRequestLocalization(options, new RequestCulture("sv"));
+            app.UseRequestLocalization(options);
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
-            var controllerTypeProvider = app.ApplicationServices.GetRequiredService<IControllerTypeProvider>();
 
-            IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
+            //new LocalizationTransformer().Execute(documentStore);
+            //IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
 
             app.UseMvc(routes =>
             {
                 //routes.DefaultHandler = new DefaultRouter(
-                //    routes.DefaultHandler,
-                //    new DefaultRouteResolver(
-                //        new RouteResolverTrie(documentStore, accessor),
-                //        new ControllerMapper(controllerTypeProvider)),                    
-                //    new DefaultVirtualPathResolver(
-                //        new RouteResolverTrie(documentStore, accessor),
-                //        new ControllerMapper(controllerTypeProvider)));
-
-                //routes.DefaultHandler = new DefaultRouter(
-                //    routes.DefaultHandler,
-                //    new DefaultRouteResolver(
-                //        new RouteResolverTrie(documentStore, requestCultureFeature),
-                //        new ControllerMapper(controllerTypeProvider),
-                //        requestCultureFeature),
-                //    new DefaultVirtualPathResolver(
-                //        new RouteResolverTrie(documentStore, requestCultureFeature),
-                //        new ControllerMapper(controllerTypeProvider)));
+                    //routes.DefaultHandler,
+                    //new DefaultRouteResolver(
+                    //    new RouteResolverTrie(documentStore),
+                    //    app.ApplicationServices.GetService<IControllerMapper>()),
+                    //new DefaultVirtualPathResolver(
+                    //    new RouteResolverTrie(documentStore),
+                    //    app.ApplicationServices.GetService<IControllerMapper>()),
+                    //options.DefaultRequestCulture);
 
                 routes.Routes.Insert(0, new DefaultRouter(
                     routes.DefaultHandler,
                     new DefaultRouteResolver(
                         new RouteResolverTrie(documentStore),
-                        new ControllerMapper(controllerTypeProvider)),
+                        app.ApplicationServices.GetService<IControllerMapper>()),
                     new DefaultVirtualPathResolver(
                         new RouteResolverTrie(documentStore),
-                        new ControllerMapper(controllerTypeProvider)),
-                    new RequestCulture("sv")));
-
+                        app.ApplicationServices.GetService<IControllerMapper>()),
+                    options.DefaultRequestCulture));
+                
                 //routes.MapRoute(
                 //    name: "default_localization",
                 //    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
@@ -85,11 +83,11 @@ namespace src
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");                
 
             });
 
-            app.UseSampleData(options);
+            Task.Run(() => app.UseSampleData(options)).Wait();
 
         }
 
@@ -97,16 +95,15 @@ namespace src
         {
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
 
-            var config = documentStore.DatabaseCommands.Head("brickpile/configuration");
+            var config = documentStore.OpenSession().Advanced.Exists("brickpile/configuration");
 
-            if (config != null) return;
+            if (config) return;
 
             using (var session = documentStore.OpenAsyncSession())
             {
                 foreach (var culture in options.SupportedCultures)
                 {
-                    await session.StoreAsync(new Site(culture.DisplayName, culture, new CultureInfo("en").LCID == culture.LCID));
-                    // await session.StoreAsync(new Site(culture.DisplayName, culture, options.DefaultRequestCulture.Culture.LCID == culture.LCID));
+                    await session.StoreAsync(new Site(culture.DisplayName, culture.TwoLetterISOLanguageName, options.DefaultRequestCulture.Culture.LCID == culture.LCID));
                 }
                 await session.StoreAsync(new Configuration { Id = "brickpile/configuration" });
                 await session.SaveChangesAsync();
@@ -116,16 +113,16 @@ namespace src
             {
                 // Create a page with default language
                 await session
-                    .LocalizeFor(new CultureInfo("en"))
-                    .ForModel(new Home { Heading = "In english" })
+                    .LocalizeFor(new RequestCulture(new CultureInfo("en")))
+                    .ForModel(new Home { Heading = "In english", })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now });
+                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..."} });
 
                 await session
-                    .LocalizeFor(new CultureInfo("en"))
-                    .ForModel(new About { Heading = "ASP.NET 5 ? RavenDB" })
+                    .LocalizeFor(new RequestCulture(new CultureInfo("en")))
+                    .ForModel(new About { Heading = ".NET Core ? RavenDB" })
                     .ForUrl("/about")
-                    .StoreAsync(new Page { Name = "About" } );
+                    .StoreAsync(new Page { Name = "About", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..." } } );
 
                 await session.SaveChangesAsync();
             }
@@ -134,26 +131,27 @@ namespace src
             {
                 // Create a new language for a page
                 var home = await session.LoadAsync<Page>("pages/1");
+
                 await session
                     //.For(home)
-                    .LocalizeFor(home, new CultureInfo("sv"))
-                    .ForModel(new Home { Heading = "På svenska" })
+                    .LocalizeFor(home, new RequestCulture(new CultureInfo("sv")))
+                    .ForModel(new Home { Heading = "Pï¿½ svenska" })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now });
+                    .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 var about = await session.LoadAsync<Page>("pages/2");
 
                 await session
-                    .LocalizeFor(about, new CultureInfo("sv"))
+                    .LocalizeFor(about, new RequestCulture(new CultureInfo("sv")))
                     .ForModel(new About { Heading = "Om oss" } )
                     .ForUrl("/om-oss")
-                    .StoreAsync(new Page { Name = "Om oss" });
+                    .StoreAsync(new Page { Name = "Om oss", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 await session
-                    .LocalizeFor(new CultureInfo("sv"))
+                    .LocalizeFor(new RequestCulture(new CultureInfo("sv")))
                     .ForModel(new About {Heading = "En sida till"})
                     .ForUrl("/om-oss/en-sida-till")
-                    .StoreAsync(new Page {Name = "En sida till"});
+                    .StoreAsync(new Page {Name = "En sida till", Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 await session.SaveChangesAsync();
             }

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using Raven.Client;
+using Raven.Client.Documents.Session;
 using src.Localization;
 using src.Mvc;
 using src.Routing.Trie;

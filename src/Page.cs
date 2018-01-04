@@ -27,6 +27,10 @@ namespace src
             Metadata = new Metadata();
         }
     }
+    public interface IPage {
+        string Id { get; }
+        string Name { get; }
+    }
     public class Metadata
     {
         [Display(Name = "Meta Title", Description = "Recommended: 70 characters.")]

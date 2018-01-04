@@ -1,19 +1,10 @@
-﻿@*@model IEnumerable<KeyValuePair<string, src.Routing.Trie.TrieNode>>*@
-@model IEnumerable<Page>
+﻿@model System.Collections.Generic.List<Page>
 
 <ul class="nav navbar-nav">
-    @foreach (var page in Model)
-    {
-        <li>
-            <a asp-action="Index" asp-route-id="@(page.Id)">@page.Name</a>
+    @foreach (var p in Model)
+    {    
+        <li>            
+            <a asp-action="Index" asp-route-id="@p.Id">@p.Name</a>
         </li>
     }
 </ul>
-
-@*<ul class="nav navbar-nav">
-    @foreach (var node in Model) {
-        <li>
-            <a asp-action="Index" asp-route-id="@(node.Value.PageId)">@node.Value.Name</a>
-        </li>        
-    }
-</ul>*@

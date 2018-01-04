@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Http.Features;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Mvc;
-using Raven.Client;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Session;
 using src.Localization;
 using src.Routing.Trie;
 
@@ -16,27 +18,40 @@ namespace src.Components
         private readonly IRouteResolverTrie _routeResolverTrie;
         private readonly IHttpContextAccessor _httpAccessor;
         private readonly IDocumentStore _documentStore;
+        private readonly IBricsContextAccessor _bricsContextAccessor;
+        private RequestCulture CurrentRequestCulture => _httpAccessor.HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture;
 
-        public MenuComponent(IRouteResolverTrie routeResolverTrie, IHttpContextAccessor httpAccessor, IDocumentStore documentStore)
+        public MenuComponent(IRouteResolverTrie routeResolverTrie, IHttpContextAccessor httpAccessor, IDocumentStore documentStore, IBricsContextAccessor bricsContextAccessor)
         {
             _routeResolverTrie = routeResolverTrie;
             _httpAccessor = httpAccessor;
             _documentStore = documentStore;
+            _bricsContextAccessor = bricsContextAccessor;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var requestCultureFeature = _httpAccessor.HttpContext.Features.Get<IRequestCultureFeature>();
-            var trie = await _routeResolverTrie.LoadTrieAsync(requestCultureFeature.RequestCulture);
+            var trie = await _routeResolverTrie.LoadTrieAsync(CurrentRequestCulture);
 
             using (var session = _documentStore.OpenAsyncSession())
-            {
+            {                
                 var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
-                var pages = await session.LocalizeFor(requestCultureFeature.RequestCulture.Culture).LoadAsync<Page>(ids);
+                //var children = await session.Advanced.GetChildrenOf(_bricsContextAccessor.CurrentPage, CurrentRequestCulture);
+                //var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(children);
+                //var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
+                var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(ids);
+                //var pages = await session.Localize().LoadAsync(ids);
                 return View(pages);
             }
-
-            //return View(trie.ChildrenOf("/", true));
         }
+    }
+
+    public static class AsyncAdvancedSessionOperationExtensions {
+        
+        public static async Task<IEnumerable<string>> GetChildrenOf(this IAsyncAdvancedSessionOperations asyncAdvancedSessionOperations, Page page, RequestCulture requestCulture) {
+            var site = await ((AsyncDocumentSession)asyncAdvancedSessionOperations).LoadAsync<Site>($"sites/{requestCulture.Culture.TwoLetterISOLanguageName}");
+            return site.Trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
+        }
+
     }
 }

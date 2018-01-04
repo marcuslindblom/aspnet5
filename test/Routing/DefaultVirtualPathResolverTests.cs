@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.AspNet.Localization;
-using Microsoft.AspNet.Routing;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Routing;
 using Moq;
 using src;
 using src.Mvc;
