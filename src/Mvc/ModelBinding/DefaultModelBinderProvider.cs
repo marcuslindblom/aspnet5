@@ -8,7 +8,8 @@ namespace src.Mvc.ModelBinding
     {
         private IDocumentStore _documentStore;
 
-        public DefaultModelBinderProvider(IDocumentStore documentStore) {
+        public DefaultModelBinderProvider(IDocumentStore documentStore)
+        {
             _documentStore = documentStore;
         }
         public IModelBinder GetBinder(ModelBinderProviderContext context)

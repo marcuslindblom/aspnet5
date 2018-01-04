@@ -17,7 +17,7 @@ namespace src.Mvc
         {
             foreach (var type in controllerTypeProvider.Controllers)
             {
-                ControllerMap.TryAdd(type, type.Name.Replace("Controller", ""));
+                ControllerMap.TryAdd(type.GetType(), type.Name.Replace("Controller", ""));
                 var methodNames = type.GetMethods().Select(x => x.Name).ToArray();
                 ControllerActionMap.TryAdd(type.Name.Replace("Controller", ""), methodNames);
             }
@@ -35,7 +35,7 @@ namespace src.Mvc
             if (controllerName == null) return false;
             return ControllerActionMap.ContainsKey(controllerName) &&
                    ControllerActionMap[controllerName].Any(
-                       action => string.Equals(action, actionName, StringComparison.InvariantCultureIgnoreCase));
+                       action => string.Equals(action, actionName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

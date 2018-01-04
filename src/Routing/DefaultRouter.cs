@@ -67,7 +67,6 @@ namespace src.Routing
             var virtualPathData = new VirtualPathData(_next, path);
 
             //context.IsBound = true;
-
             return NormalizeVirtualPath(virtualPathData);
         }
 
@@ -80,8 +79,6 @@ namespace src.Routing
             {
                 return;
             }
-
-            //context.RouteData.Routers.Insert(0,_next);
 
             var requestCulture = DetectRequestCulture(context.HttpContext);
 

@@ -22,7 +22,7 @@ namespace src.Mvc
         }
         private bool HasContentTypeAttribute(TypeInfo typeInfo)
         {
-            return typeInfo.GetCustomAttributes(typeof(ViewModelAttribute), false).Length > 0;
+            return typeInfo.GetCustomAttributes(typeof(ViewModelAttribute), false).Any();
         }
 
 

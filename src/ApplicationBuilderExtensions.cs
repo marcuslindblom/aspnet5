@@ -16,7 +16,13 @@ namespace src
 {
     public static class ApplicationBuilderExtensions
     {
-        public static void UseBrickPile(this IApplicationBuilder app){}
+        public static void UseBrickPile(this IApplicationBuilder app){
+
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }            
+        }
 
         public static void UseBrickPile(this IApplicationBuilder app, Action<RequestLocalizationOptions> configureOptions)
         {
@@ -24,6 +30,7 @@ namespace src
             {
                 throw new ArgumentNullException(nameof(app));
             }
+
             if (configureOptions == null)
             {
                 throw new ArgumentNullException(nameof(configureOptions));
@@ -41,7 +48,8 @@ namespace src
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
 
-            IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
+            //new LocalizationTransformer().Execute(documentStore);
+            //IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
 
             app.UseMvc(routes =>
             {
@@ -64,7 +72,7 @@ namespace src
                         new RouteResolverTrie(documentStore),
                         app.ApplicationServices.GetService<IControllerMapper>()),
                     options.DefaultRequestCulture));
-
+                
                 //routes.MapRoute(
                 //    name: "default_localization",
                 //    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
@@ -75,7 +83,7 @@ namespace src
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");                
 
             });
 
@@ -106,15 +114,15 @@ namespace src
                 // Create a page with default language
                 await session
                     .LocalizeFor(new RequestCulture(new CultureInfo("en")))
-                    .ForModel(new Home { Heading = "In english" })
+                    .ForModel(new Home { Heading = "In english", })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now });
+                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..."} });
 
                 await session
                     .LocalizeFor(new RequestCulture(new CultureInfo("en")))
                     .ForModel(new About { Heading = ".NET Core ? RavenDB" })
                     .ForUrl("/about")
-                    .StoreAsync(new Page { Name = "About" } );
+                    .StoreAsync(new Page { Name = "About", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..." } } );
 
                 await session.SaveChangesAsync();
             }
@@ -127,9 +135,9 @@ namespace src
                 await session
                     //.For(home)
                     .LocalizeFor(home, new RequestCulture(new CultureInfo("sv")))
-                    .ForModel(new Home { Heading = "På svenska" })
+                    .ForModel(new Home { Heading = "Pï¿½ svenska" })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now });
+                    .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 var about = await session.LoadAsync<Page>("pages/2");
 
@@ -137,13 +145,13 @@ namespace src
                     .LocalizeFor(about, new RequestCulture(new CultureInfo("sv")))
                     .ForModel(new About { Heading = "Om oss" } )
                     .ForUrl("/om-oss")
-                    .StoreAsync(new Page { Name = "Om oss" });
+                    .StoreAsync(new Page { Name = "Om oss", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 await session
                     .LocalizeFor(new RequestCulture(new CultureInfo("sv")))
                     .ForModel(new About {Heading = "En sida till"})
                     .ForUrl("/om-oss/en-sida-till")
-                    .StoreAsync(new Page {Name = "En sida till"});
+                    .StoreAsync(new Page {Name = "En sida till", Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 
                 await session.SaveChangesAsync();
             }

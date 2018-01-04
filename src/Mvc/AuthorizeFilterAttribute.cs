@@ -13,9 +13,10 @@ namespace src.Mvc
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if(!HasAllowAnonymous(context)) {
+            if (!HasAllowAnonymous(context))
+            {
                 object value;
-                if(context.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
+                if (context.HttpContext.Items.TryGetValue(DefaultRouter.CurrentNodeKey, out value))
                 {
 
                     var accessor = context.HttpContext.RequestServices.GetService<IBricsContextAccessor>();

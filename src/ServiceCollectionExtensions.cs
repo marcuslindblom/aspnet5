@@ -39,6 +39,7 @@ namespace src
             //store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]); // TODO Is this possible?
             //store.Conventions.RegisterIdLoadConvention<Site>((dbname, site) => "sites/" + site.Culture.Name);
             store.Conventions.RegisterAsyncIdConvention<Site>((dbname, site) => Task.FromResult($"sites/{site.Culture}"));
+
             //store.Conventions.RegisterIdConvention<Page>((databaseName, commands, page) => "pages/" + page.Id);
             //store.Conventions.RegisterAsyncIdConvention<ApplicationBuilderExtensions.MyClass>((dbname, commands, page) => new CompletedTask<string>("myclasses/" + page.PageLink));
             store.Initialize();
