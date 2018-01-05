@@ -16,11 +16,11 @@ install:
 # scripts to run before build
 before_build:
 # Restore NuGet
- - nuget restore
+# - nuget restore
 # Display .NET Core version
  - cmd: dotnet --version
 # Display minimal restore text
- - cmd: dotnet restore ./src/src.csproj --verbosity m
+ - cmd: dotnet restore ./src/src.csproj --verbosity m --force
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
