@@ -1,6 +1,8 @@
 # Operating system (build VM template)
 image: Visual Studio 2017
 
+cache:
+  #- packages
 # scripts that are called at very beginning, before repo cloning
 init:
  - git config --global core.autocrlf true
