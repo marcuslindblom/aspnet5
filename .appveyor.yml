@@ -6,6 +6,9 @@ image: Visual Studio 2017
 init:
  - git config --global core.autocrlf true
 
+ before_build:
+
+
 # scripts that run after cloning repository
 install:
  # Download install script to install .NET cli in .dotnet dir
@@ -25,6 +28,8 @@ install:
 
 # scripts to run before build
 before_build:
+# Restore NuGet
+ - nuget restore
 # Display .NET Core version
  - cmd: dotnet --version
 # Display minimal restore text
