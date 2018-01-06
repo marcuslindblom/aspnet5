@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Indexes;
+using Raven.Client.ServerWide;
+using Raven.Client.ServerWide.Operations;
 using src.Localization;
 using src.Models;
 using src.Mvc;
@@ -47,6 +49,7 @@ namespace src
             app.UseRequestLocalization(options);
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
+
 
             //new LocalizationTransformer().Execute(documentStore);
             //IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
@@ -116,7 +119,7 @@ namespace src
                     .LocalizeFor(new RequestCulture(new CultureInfo("en")))
                     .ForModel(new Home { Heading = "In english", })
                     .ForUrl("/")
-                    .StoreAsync(new Page { Name = "Home", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..."} });
+                    .StoreAsync(new Page { Id = "pages/1-A", Name = "Home", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title EN ..."} });
 
                 await session
                     .LocalizeFor(new RequestCulture(new CultureInfo("en")))
