@@ -2,7 +2,7 @@
 image: Visual Studio 2017
 
 # version format
-#version: 1.0.{build}-{branch}
+version: 1.0.{build}.{branch}
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -11,10 +11,10 @@ init:
 # scripts that run after cloning repository
 install:
  - ps: $sha = "$env:APPVEYOR_REPO_COMMIT".substring(0,7)
- - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
+# - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
 # - ps: $json = Get-Content .\src\project.json -Raw | ConvertFrom-Json
 # - ps: $version = $json.version -replace "\*", $env:MY_BUILD_TAG
- - ps: $version = "$env:MY_BUILD_TAG"
+ - ps: $version = "$env:APPVEYOR_BUILD_VERSION.$sha"
  - ps: Update-AppveyorBuild -Version $version
 
 # scripts to run before build
