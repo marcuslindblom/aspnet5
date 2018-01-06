@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Brics</title>
+    <link href="~/index.css" rel="stylesheet" media="screen" />
+</head>
+<body class="hg">
+  <header class="hg-header">Workspace</header>
+  <main class="hg-main">
+    @RenderBody()
+  </main>
+  <aside class="hg-left">
+    <small>MENU</small>
+    <ul>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Overview</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Analytics</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Ratings</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Invoices</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Marketplace</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Projects</a></li>
+      <li><a asp-area="App" asp-controller="Home" asp-action="Overview">Support</a></li>
+    </ul>
+    <!-- <button type="button" class="toggle-theme">🤡 Turn theme on</button> -->
+  </aside>
+  <aside class="hg-right">
+    <metadata-panel></metadata-panel>
+    <ul>
+      <li>Viewing privacy</li>
+      <li>Private</li>
+    </ul>
+  </aside>
+  <script type="module" src="~/index.js" async></script>
+  @RenderSection("Scripts", required: false)
+</body>
+</html>

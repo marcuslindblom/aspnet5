@@ -21,7 +21,7 @@ namespace src
             if (app == null)
             {
                 throw new ArgumentNullException(nameof(app));
-            }            
+            }
         }
 
         public static void UseBrickPile(this IApplicationBuilder app, Action<RequestLocalizationOptions> configureOptions)
@@ -72,18 +72,18 @@ namespace src
                         new RouteResolverTrie(documentStore),
                         app.ApplicationServices.GetService<IControllerMapper>()),
                     options.DefaultRequestCulture));
-                
+
                 //routes.MapRoute(
                 //    name: "default_localization",
                 //    template: "{culture?}/{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     name: "AreasRoute",
-                    template: "{area}/{controller=Dashboard}/{action=Index}/{id?}");
+                    template: "{area}/{controller=Home}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");                
+                    template: "{controller=Home}/{action=Index}/{id?}");
 
             });
 
@@ -160,7 +160,7 @@ namespace src
 
         class Configuration
         {
-            public string Id { get; set; } 
+            public string Id { get; set; }
         }
     }
 }
