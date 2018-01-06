@@ -14,7 +14,7 @@ install:
  - ps: $env:MY_BUILD_TAG = "$env:APPVEYOR_BUILD_NUMBER.$env:APPVEYOR_REPO_BRANCH.$sha"
 # - ps: $json = Get-Content .\src\project.json -Raw | ConvertFrom-Json
 # - ps: $version = $json.version -replace "\*", $env:MY_BUILD_TAG
- - ps: $version = "$env:APPVEYOR_BUILD_VERSION.$env:MY_BUILD_TAG"
+ - ps: $version = "$env:MY_BUILD_TAG"
  - ps: Update-AppveyorBuild -Version $version
 
 # scripts to run before build
