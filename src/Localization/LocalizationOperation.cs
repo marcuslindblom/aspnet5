@@ -34,7 +34,6 @@ namespace src.Localization
                         };
 
             return query.FirstOrDefault();
-
         }
     }
 }

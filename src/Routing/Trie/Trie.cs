@@ -145,15 +145,14 @@ namespace src.Routing.Trie
 
         public IEnumerable<KeyValuePair<string, TrieNode>> ChildrenOf(string key, bool includeRoot = false)
         {
-            var matches = nodes.Keys.Select(x => Regex.Match(x, "^/([^/]*)[^/]"));
+            var matches = nodes.Keys.Select(x => Regex.Match(x, "^/([^/]*)[^/]$"));
             foreach (var match in matches)
             {
                 if (match.Success)
                 {
                     yield return nodes.Where(x => x.Key == match.Value).FirstOrDefault();
-                }    
+                }
             }
-            //return null;
             //return includeRoot ? nodes.Where(x => x.Key.StartsWith(key)) : nodes.Where(x => x.Key != key && x.Key.StartsWith(key));
         }
 
@@ -177,7 +176,7 @@ namespace src.Routing.Trie
                 if (trieNode.Value != null && !ancestors.Contains(trieNode))
                 {
                     ancestors.Add(trieNode.Key, trieNode.Value);
-                }                
+                }
             }
         }
 
