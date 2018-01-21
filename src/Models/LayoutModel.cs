@@ -23,8 +23,8 @@ namespace src.Models
         public void Initialize(IDocumentStore documentStore)
         {
             Id = _configuration.GetValue<string>("StartPage");
-            MetaTitle = _bricsContextAccessor.CurrentPage.Metadata.MetaTitle;
-            MetaDescription = _bricsContextAccessor.CurrentPage.Metadata.MetaDescription;
+            //MetaTitle = _bricsContextAccessor.CurrentPage.Metadata.MetaTitle;
+            //MetaDescription = _bricsContextAccessor.CurrentPage.Metadata.MetaDescription;
         }
 
         public string Id { get; set; }

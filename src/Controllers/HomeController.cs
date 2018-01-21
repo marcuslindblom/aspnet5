@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Queries;
+using src.Localization;
 using src.Models;
 
 namespace src.Controllers
@@ -24,20 +25,20 @@ namespace src.Controllers
 
         public async Task<IActionResult> Index(Page currentPage, Home model)
         {
-            using(var session = _documentStore.OpenAsyncSession()) {                
-                var postfix = $"/en";
-                var query = from page in session.Query<Page>()
-                            where page.Id.In(new[] { "pages/33-A" })
-                            let localizedDocument = RavenQuery.Load<Page>(page.Id + postfix)
-                            let metadata = RavenQuery.Metadata(page)
-                            select new
-                            {
-                                Id = page.Id,
-                                Name = localizedDocument.Name,
-                                Metadata = metadata
-                            };
+            using(var session = _documentStore.OpenAsyncSession()) {
+                // var postfix = $"/en";
+                // var query = from page in session.Query<Page>()
+                //             where page.Id.In(new[] { "pages/65-A" })
+                //             let localizedDocument = RavenQuery.Load<Page>(page.Id + postfix)
+                //             let metadata = RavenQuery.Metadata(page)
+                //             select new
+                //             {
+                //                 Id = page.Id,
+                //                 Name = localizedDocument.Name,
+                //                 Metadata = metadata
+                //             };
 
-                var result = await query.ToListAsync();
+                // var result = await query.ToListAsync();
             }
             return View();
         }

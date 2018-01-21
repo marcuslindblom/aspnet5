@@ -3,9 +3,12 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Indexes;
+using Raven.Client.ServerWide;
+using Raven.Client.ServerWide.Operations;
 using src.Localization;
 using src.Models;
 using src.Mvc;
@@ -39,6 +42,12 @@ namespace src
             var options = new RequestLocalizationOptions();
             configureOptions(options);
 
+            // var provider = new RouteDataRequestCultureProvider();
+            // provider.RouteDataStringKey = "lang";
+            // provider.UIRouteDataStringKey = "lang";
+            // provider.Options = options;
+            // options.RequestCultureProviders = new[] { provider };
+
             options.RequestCultureProviders.Insert(0, new RouteRequestCultureProvider
             {
                 Options = options
@@ -47,6 +56,7 @@ namespace src
             app.UseRequestLocalization(options);
 
             var documentStore = app.ApplicationServices.GetRequiredService<IDocumentStore>();
+
 
             //new LocalizationTransformer().Execute(documentStore);
             //IndexCreation.CreateIndexes(typeof(Startup).Assembly, documentStore);
@@ -135,7 +145,7 @@ namespace src
                 await session
                     //.For(home)
                     .LocalizeFor(home, new RequestCulture(new CultureInfo("sv")))
-                    .ForModel(new Home { Heading = "P� svenska" })
+                    .ForModel(new Home { Heading = "På svenska" })
                     .ForUrl("/")
                     .StoreAsync(new Page { Name = "Hem", PublishedDate = DateTime.Now, Metadata = new Metadata { MetaDescription = "Meta desc ...", MetaTitle = "Meta title SV ..." } });
 

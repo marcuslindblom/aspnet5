@@ -34,24 +34,25 @@ namespace src.Components
             var trie = await _routeResolverTrie.LoadTrieAsync(CurrentRequestCulture);
 
             using (var session = _documentStore.OpenAsyncSession())
-            {                
-                var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
+            {
+              var ids = await session.Advanced.GetChildrenOf(_bricsContextAccessor.CurrentPage, CurrentRequestCulture);
+              var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(ids);
+              return View(pages);
+
+                //var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
                 //var children = await session.Advanced.GetChildrenOf(_bricsContextAccessor.CurrentPage, CurrentRequestCulture);
                 //var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(children);
                 //var ids = trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
-                var pages = await session.LocalizeFor(CurrentRequestCulture).LoadAsync(ids);
                 //var pages = await session.Localize().LoadAsync(ids);
-                return View(pages);
             }
         }
     }
 
     public static class AsyncAdvancedSessionOperationExtensions {
-        
         public static async Task<IEnumerable<string>> GetChildrenOf(this IAsyncAdvancedSessionOperations asyncAdvancedSessionOperations, Page page, RequestCulture requestCulture) {
             var site = await ((AsyncDocumentSession)asyncAdvancedSessionOperations).LoadAsync<Site>($"sites/{requestCulture.Culture.TwoLetterISOLanguageName}");
-            return site.Trie.ChildrenOf("/", true).Select(x => x.Value.PageId);
+            var node = site.Trie.Where(x => x.Value.PageId == page.Id).FirstOrDefault();
+            return site.Trie.ChildrenOf(node.Key, true).Select(x => x.Value.PageId);
         }
-
     }
 }

@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Client.Documents;
+using Raven.Client.ServerWide;
+using Raven.Client.ServerWide.Operations;
 using src.Mvc;
 using src.Mvc.ModelBinding;
 using src.Routing.Trie;
@@ -35,6 +37,17 @@ namespace src
                 Urls = new string[] { Configuration["Data:DefaultConnection:ConnectionString"] },
                 Database = Configuration["Data:DefaultDatabase"]
             };
+
+            // try
+            // {
+            //   var dbRecord = new DatabaseRecord(store.Database);
+            //   var createDbOp = new CreateDatabaseOperation(dbRecord);
+            //   store.Maintenance.Server.Send(createDbOp);
+            // }
+            // catch (Exception e)
+            // {
+            //     // database already exists
+            // }
 
             //store.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(Configuration["Data:DefaultDatabase"]); // TODO Is this possible?
             //store.Conventions.RegisterIdLoadConvention<Site>((dbname, site) => "sites/" + site.Culture.Name);
@@ -67,7 +80,7 @@ namespace src
             {
                 options.ModelBinderProviders.Insert(0, new DefaultModelBinderProvider(DocumentStore));
                 //options.Filters.Add(typeof(PublishedFilterAttribute), 1);
-                options.Filters.Add(typeof (AuthorizeFilterAttribute), 2);                
+                options.Filters.Add(typeof (AuthorizeFilterAttribute), 2);
             });
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();

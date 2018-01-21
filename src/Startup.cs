@@ -8,6 +8,7 @@ using src.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Localization.Routing;
 
 namespace src
 {
@@ -47,7 +48,7 @@ namespace src
 
             // Add localization to the request pipeline.
             app.UseBrickPile(options =>
-            {                
+            {
                 options.SupportedCultures = new List<CultureInfo>
                 {
                     new CultureInfo("en"),

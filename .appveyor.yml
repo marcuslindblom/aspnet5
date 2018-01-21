@@ -2,7 +2,7 @@
 image: Visual Studio 2017
 
 # version format
-version: 1.0.{build}.{branch}
+version: 1.0.0-{build}.{branch}
 
 # scripts that are called at very beginning, before repo cloning
 init:

@@ -30,7 +30,7 @@ namespace src.Localization
         }
 
         public Task<Page> LoadAsync(string id, CancellationToken token = default(CancellationToken))
-        {            
+        {
             var postfix = $"/{_requestCulture.Culture.TwoLetterISOLanguageName}";
             var query = from page in _session.Query<Page>()
                         where page.Id == id
@@ -38,10 +38,10 @@ namespace src.Localization
                         select new Page
                         {
                             Id = page.Id,
-                            Name = localizedDocument.Name,
+                            Name = localizedDocument.Name ?? page.Name,
                             PublishedDate = page.PublishedDate,
                             Acl = page.Acl,
-                            Metadata = localizedDocument.Metadata
+                            Metadata = localizedDocument.Metadata ?? page.Metadata
                         };
 
             return query.FirstOrDefaultAsync();
